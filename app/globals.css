@@ -1,26 +1,119 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-ivory: #FAF8F5;
+    --color-blush: #F7EFEF;
+    --color-blush-subtle: #FDF9F8;
+    --color-rose: #C98A90;
+    --color-rose-deep: #A45F67;
+    --color-charcoal: #191617;
+    --color-muted: #7A7273;
+    --color-border: #E8DFDC;
+    --color-border-subtle: #F0E9E7;
+  }
+
+  html {
+    background-color: var(--color-ivory);
+    color: var(--color-charcoal);
+    scroll-behavior: auto;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    background-color: var(--color-ivory);
+    color: var(--color-charcoal);
+    overflow-x: hidden;
+    selection-background-color: #EED7DA;
+    selection-color: #191617;
+  }
+
+  ::selection {
+    background-color: #EED7DA;
+    color: #191617;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Editorial typography classes */
+.font-editorial-serif {
+  font-family: var(--font-serif), "Cormorant Garamond", Georgia, serif;
+}
+
+.font-editorial-sans {
+  font-family: var(--font-sans), "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-cursive {
+  font-family: var(--font-cursive), "Great Vibes", cursive;
+}
+
+/* Hairline borders */
+.border-hairline {
+  border-width: 1px;
+  border-color: #E8DFDC;
+}
+
+.border-b-hairline {
+  border-bottom-width: 1px;
+  border-bottom-color: #E8DFDC;
+}
+
+.border-t-hairline {
+  border-top-width: 1px;
+  border-top-color: #E8DFDC;
+}
+
+/* Subtle editorial grain overlay */
+.editorial-grain {
+  background-image: radial-gradient(rgba(201, 138, 144, 0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Lenis smooth scroll recommended styles */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Custom minimal scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF8F5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #DFD4D2;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C98A90;
+}
+
+/* Accessibility: Reduced motion overrides */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
