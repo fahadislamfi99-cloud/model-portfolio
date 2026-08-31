@@ -5,13 +5,13 @@ export const metadata: Metadata = {
   description:
     "Curated photo archive and high-resolution modeling gallery featuring Comatozze across editorial, beauty, and fashion looks.",
   alternates: {
-    canonical: "https://comatozze.com/gallery",
+    canonical: "https://comatozze.neonweb.xyz/gallery",
   },
   openGraph: {
-    title: "Comatozze Photos — Latest Model & Editorial Gallery",
+    title: "Comatozze Photo Gallery — Editorial & Modeling Archive",
     description:
-      "Curated photo archive and high-resolution modeling gallery featuring Comatozze across editorial, beauty, and fashion looks.",
-    url: "https://comatozze.com/gallery",
+      "Explore the curated photo gallery of Comatozze, featuring high-fashion editorial portraits, swimsuit collections, and artistic visuals.",
+    url: "https://comatozze.neonweb.xyz/gallery",
     images: ["/images/model/comatozze-saree-gold.jpg"],
   },
 };

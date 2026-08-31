@@ -3,7 +3,7 @@ import { workProjects } from "@/data/work";
 import { videosData } from "@/data/videos";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://comatozze.com";
+  const baseUrl = "https://comatozze.neonweb.xyz";
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {

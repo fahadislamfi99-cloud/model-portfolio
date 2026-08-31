@@ -5,13 +5,13 @@ export const metadata: Metadata = {
   description:
     "Watch the latest fashion films, widescreen cinematic features, and vertical motion studies starring Comatozze.",
   alternates: {
-    canonical: "https://comatozze.com/videos",
+    canonical: "https://comatozze.neonweb.xyz/videos",
   },
   openGraph: {
     title: "Comatozze Videos — Latest & New Modeling Videos",
     description:
       "Watch the latest fashion films, widescreen cinematic features, and vertical motion studies starring Comatozze.",
-    url: "https://comatozze.com/videos",
+    url: "https://comatozze.neonweb.xyz/videos",
     images: ["/images/model/comatozze-pool-sunset-1.png"],
   },
 };

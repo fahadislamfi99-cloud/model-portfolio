@@ -31,7 +31,7 @@ const greatVibes = Great_Vibes({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://comatozze.com"),
+  metadataBase: new URL("https://comatozze.neonweb.xyz"),
   title: {
     default: "Comatozze — Official Model Portfolio, Photos & Videos",
     template: "%s | Comatozze",
@@ -53,15 +53,15 @@ export const metadata: Metadata = {
     "Uma North",
     "Uma North model",
   ],
-  authors: [{ name: "Comatozze", url: "https://comatozze.com" }],
+  authors: [{ name: "Comatozze", url: "https://comatozze.neonweb.xyz" }],
   creator: "Comatozze",
   alternates: {
-    canonical: "https://comatozze.com",
+    canonical: "https://comatozze.neonweb.xyz",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://comatozze.com",
+    url: "https://comatozze.neonweb.xyz",
     title: "Comatozze — Official Model Portfolio, Photos & Videos",
     description:
       "Explore Comatozze's official model portfolio, latest videos, editorial photos, career highlights, modeling work and verified social profiles.",
@@ -114,10 +114,10 @@ export default function RootLayout({
     name: "Comatozze",
     alternateName: ["Uma North", "UmaNorth"],
     jobTitle: "Model & Content Creator",
-    image: "https://comatozze.com/images/model/comatozze-hero-poolside.jpg",
+    image: "https://comatozze.neonweb.xyz/images/model/comatozze-hero-poolside.jpg",
     description:
       "Comatozze is an independent model and content creator known for editorial fashion, atmospheric films, and natural feminine confidence.",
-    url: "https://comatozze.com",
+    url: "https://comatozze.neonweb.xyz",
     sameAs: [
       "https://fansly.com/comatozze",
       "https://instagram.com/umaanorth",
@@ -129,7 +129,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Comatozze",
-    url: "https://comatozze.com",
+    url: "https://comatozze.neonweb.xyz",
     description:
       "Official website and model portfolio of Comatozze, featuring editorial photos, latest videos, career biography, and verified platform hubs.",
   };

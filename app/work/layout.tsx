@@ -5,13 +5,13 @@ export const metadata: Metadata = {
   description:
     "Explore selected fashion campaigns, runway archives, and luxury editorial modeling work by Comatozze.",
   alternates: {
-    canonical: "https://comatozze.com/work",
+    canonical: "https://comatozze.neonweb.xyz/work",
   },
   openGraph: {
-    title: "Comatozze — Modeling Work & Portfolio",
+    title: "Comatozze Modeling Campaigns — Selected Commercial Work",
     description:
-      "Explore selected fashion campaigns, runway archives, and luxury editorial modeling work by Comatozze.",
-    url: "https://comatozze.com/work",
+      "Selected editorial features, runway appearances, and brand partnerships with Comatozze.",
+    url: "https://comatozze.neonweb.xyz/work",
     images: ["/images/model/comatozze-hero-poolside.jpg"],
   },
 };

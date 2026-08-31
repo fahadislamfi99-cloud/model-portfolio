@@ -11,13 +11,13 @@ export const metadata: Metadata = {
   description:
     "Explore the biography, profile specifications, career milestones, and artistic philosophy of fashion model Comatozze (also known as Uma North).",
   alternates: {
-    canonical: "https://comatozze.com/about",
+    canonical: "https://comatozze.neonweb.xyz/about",
   },
   openGraph: {
     title: "About Comatozze — Biography, Profile & Career",
     description:
       "Explore the biography, profile specifications, career milestones, and artistic philosophy of fashion model Comatozze.",
-    url: "https://comatozze.com/about",
+    url: "https://comatozze.neonweb.xyz/about",
     images: ["/images/model/image-6-lace-bodysuit.jpg"],
   },
 };
@@ -31,13 +31,13 @@ export default function AboutPage() {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: "https://comatozze.com",
+        item: "https://comatozze.neonweb.xyz",
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "About Comatozze",
-        item: "https://comatozze.com/about",
+        item: "https://comatozze.neonweb.xyz/about",
       },
     ],
   };

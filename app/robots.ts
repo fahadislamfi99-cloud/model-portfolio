@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin/", "/api/admin/"],
     },
-    sitemap: "https://comatozze.com/sitemap.xml",
+    sitemap: "https://comatozze.neonweb.xyz/sitemap.xml",
   };
 }
