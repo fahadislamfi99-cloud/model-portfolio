@@ -134,8 +134,19 @@ export default function AdminDashboard() {
     window.location.href = "/admin/login";
   };
 
-  // Direct signed Cloudinary upload (bypasses Vercel 4.5MB FUNCTION_PAYLOAD_TOO_LARGE limit)
-  const uploadFile = async (file: File, type: "photos" | "videos" | "thumbnails") => {
+  // Upload progress state
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [uploadStatus, setUploadStatus] = useState<string>("");
+
+  // Direct signed Cloudinary upload with real-time percentage progress
+  const uploadFile = async (
+    file: File,
+    type: "photos" | "videos" | "thumbnails",
+    label = "file"
+  ) => {
+    setUploadStatus(`Signing ${label}...`);
+    setUploadProgress(0);
+
     try {
       const folder = `comatozze/${type}`;
       const signRes = await fetch("/api/admin/upload/sign", {
@@ -159,20 +170,40 @@ export default function AdminDashboard() {
       directForm.append("signature", signData.signature);
       directForm.append("folder", signData.folder);
 
-      const cloudRes = await fetch(uploadUrl, {
-        method: "POST",
-        body: directForm,
+      setUploadStatus(`Uploading ${label} to Cloudinary...`);
+
+      // Upload with real-time progress via XMLHttpRequest
+      return await new Promise<string>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", uploadUrl);
+
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percent = Math.round((event.loaded / event.total) * 100);
+            setUploadProgress(percent);
+          }
+        };
+
+        xhr.onload = () => {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            if (xhr.status >= 200 && xhr.status < 300 && data.secure_url) {
+              setUploadProgress(100);
+              resolve(data.secure_url);
+            } else {
+              reject(new Error(data.error?.message || `Upload failed with status ${xhr.status}`));
+            }
+          } catch {
+            reject(new Error("Failed to parse Cloudinary response"));
+          }
+        };
+
+        xhr.onerror = () => reject(new Error("Network error during upload"));
+        xhr.send(directForm);
       });
-
-      const cloudData = await cloudRes.json();
-      if (!cloudRes.ok) {
-        throw new Error(cloudData.error?.message || "Direct upload to Cloudinary failed");
-      }
-
-      return cloudData.secure_url as string;
     } catch (directErr: unknown) {
-      console.warn("Direct upload error, attempting standard route:", directErr);
-      // Fallback to internal route if direct upload fails
+      console.warn("Direct upload error, attempting standard fallback:", directErr);
+      setUploadStatus(`Uploading ${label} via fallback...`);
       const fd = new FormData();
       fd.append("file", file);
       fd.append("type", type);
@@ -195,8 +226,10 @@ export default function AdminDashboard() {
     try {
       let finalUrl = photoForm.previewUrl;
       if (photoForm.file) {
-        finalUrl = await uploadFile(photoForm.file, "photos");
+        finalUrl = await uploadFile(photoForm.file, "photos", "photo");
       }
+
+      setUploadStatus("Saving photo to database...");
 
       const res = await fetch("/api/admin/photos", {
         method: "POST",
@@ -265,12 +298,14 @@ export default function AdminDashboard() {
       let finalThumbnail = videoForm.existingThumbnail || "/images/model/comatozze-pool-sunset-1.png";
 
       if (videoForm.videoFile) {
-        finalVideoUrl = await uploadFile(videoForm.videoFile, "videos");
+        finalVideoUrl = await uploadFile(videoForm.videoFile, "videos", "video file");
       }
 
       if (videoForm.thumbnailFile) {
-        finalThumbnail = await uploadFile(videoForm.thumbnailFile, "thumbnails");
+        finalThumbnail = await uploadFile(videoForm.thumbnailFile, "thumbnails", "thumbnail image");
       }
+
+      setUploadStatus("Saving video metadata to database...");
 
       const method = videoForm.id ? "PUT" : "POST";
       const payload = {
@@ -723,21 +758,38 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
+              {/* Upload Progress Display */}
+              {uploading && (
+                <div className="bg-[#FAF8F5] border border-[#EFE8E6] rounded p-3 space-y-1.5">
+                  <div className="flex justify-between items-center text-[11px] font-sans">
+                    <span className="text-[#5C5556] truncate pr-2">{uploadStatus || "Uploading file..."}</span>
+                    <span className="font-semibold text-[#D85E78]">{uploadProgress}%</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-[#EFE8E6] rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-[#D85E78] transition-all duration-150 ease-out"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center justify-end space-x-3 pt-4 border-t border-[#EFE8E6]">
                 <button
                   type="button"
                   onClick={() => setShowPhotoModal(false)}
-                  className="px-4 py-2 text-xs font-sans text-[#7A7273] hover:text-[#1A1718]"
+                  disabled={uploading}
+                  className="px-4 py-2 text-xs font-sans text-[#7A7273] hover:text-[#1A1718] disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={uploading}
-                  className="px-6 py-2.5 bg-[#D85E78] hover:bg-[#C24B65] text-white text-xs font-sans uppercase tracking-wider font-semibold rounded disabled:opacity-50 flex items-center space-x-1.5"
+                  className="px-6 py-2.5 bg-[#D85E78] hover:bg-[#C24B65] text-white text-xs font-sans uppercase tracking-wider font-semibold rounded disabled:opacity-50 flex items-center space-x-1.5 shadow-sm"
                 >
                   {uploading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  <span>{uploading ? "Uploading..." : "Save Photo"}</span>
+                  <span>{uploading ? `Uploading (${uploadProgress}%)` : "Save Photo"}</span>
                 </button>
               </div>
             </form>
@@ -869,21 +921,38 @@ export default function AdminDashboard() {
                 />
               </div>
 
+              {/* Upload Progress Display */}
+              {uploading && (
+                <div className="bg-[#FAF8F5] border border-[#EFE8E6] rounded p-3 space-y-1.5">
+                  <div className="flex justify-between items-center text-[11px] font-sans">
+                    <span className="text-[#5C5556] truncate pr-2">{uploadStatus || "Uploading video..."}</span>
+                    <span className="font-semibold text-[#D85E78]">{uploadProgress}%</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-[#EFE8E6] rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-[#D85E78] transition-all duration-150 ease-out"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center justify-end space-x-3 pt-4 border-t border-[#EFE8E6]">
                 <button
                   type="button"
                   onClick={() => setShowVideoModal(false)}
-                  className="px-4 py-2 text-xs font-sans text-[#7A7273] hover:text-[#1A1718]"
+                  disabled={uploading}
+                  className="px-4 py-2 text-xs font-sans text-[#7A7273] hover:text-[#1A1718] disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={uploading}
-                  className="px-6 py-2.5 bg-[#D85E78] hover:bg-[#C24B65] text-white text-xs font-sans uppercase tracking-wider font-semibold rounded disabled:opacity-50 flex items-center space-x-1.5"
+                  className="px-6 py-2.5 bg-[#D85E78] hover:bg-[#C24B65] text-white text-xs font-sans uppercase tracking-wider font-semibold rounded disabled:opacity-50 flex items-center space-x-1.5 shadow-sm"
                 >
                   {uploading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  <span>{uploading ? "Saving Video..." : "Save Video"}</span>
+                  <span>{uploading ? `Uploading (${uploadProgress}%)` : "Save Video"}</span>
                 </button>
               </div>
             </form>
