@@ -134,15 +134,53 @@ export default function AdminDashboard() {
     window.location.href = "/admin/login";
   };
 
-  // Upload file helper
+  // Direct signed Cloudinary upload (bypasses Vercel 4.5MB FUNCTION_PAYLOAD_TOO_LARGE limit)
   const uploadFile = async (file: File, type: "photos" | "videos" | "thumbnails") => {
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("type", type);
-    const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "File upload failed");
-    return data.url as string;
+    try {
+      const folder = `comatozze/${type}`;
+      const signRes = await fetch("/api/admin/upload/sign", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ folder }),
+      });
+      const signData = await signRes.json();
+      if (!signRes.ok || !signData.signature) {
+        throw new Error(signData.error || "Failed to generate upload signature");
+      }
+
+      const isVideo = type === "videos" || file.type.startsWith("video/");
+      const resourceType = isVideo ? "video" : "image";
+      const uploadUrl = `https://api.cloudinary.com/v1_1/${signData.cloudName}/${resourceType}/upload`;
+
+      const directForm = new FormData();
+      directForm.append("file", file);
+      directForm.append("api_key", signData.apiKey);
+      directForm.append("timestamp", String(signData.timestamp));
+      directForm.append("signature", signData.signature);
+      directForm.append("folder", signData.folder);
+
+      const cloudRes = await fetch(uploadUrl, {
+        method: "POST",
+        body: directForm,
+      });
+
+      const cloudData = await cloudRes.json();
+      if (!cloudRes.ok) {
+        throw new Error(cloudData.error?.message || "Direct upload to Cloudinary failed");
+      }
+
+      return cloudData.secure_url as string;
+    } catch (directErr: unknown) {
+      console.warn("Direct upload error, attempting standard route:", directErr);
+      // Fallback to internal route if direct upload fails
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("type", type);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "File upload failed");
+      return data.url as string;
+    }
   };
 
   // Save Photo
