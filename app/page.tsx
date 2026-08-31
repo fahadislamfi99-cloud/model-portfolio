@@ -1,6 +1,5 @@
 import { Hero } from "@/components/home/Hero";
 import { AboutPreview } from "@/components/home/AboutPreview";
-import { SelectedWork } from "@/components/home/SelectedWork";
 import { LatestVideos } from "@/components/home/LatestVideos";
 import { LongVideoSection } from "@/components/home/LongVideoSection";
 import { CareerHighlights } from "@/components/home/CareerHighlights";
@@ -12,7 +11,6 @@ export default function HomePage() {
     <>
       <Hero />
       <AboutPreview />
-      <SelectedWork />
       <LatestVideos />
       <LongVideoSection />
       <CareerHighlights />
@@ -21,3 +19,4 @@ export default function HomePage() {
     </>
   );
 }
+
