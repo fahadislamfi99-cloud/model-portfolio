@@ -690,23 +690,65 @@ export default function AdminDashboard() {
 
             <form onSubmit={handleSavePhoto} className="space-y-4">
               <div>
-                <label className="block text-[10px] font-sans uppercase tracking-wider text-[#7A7273] mb-1">
+                <label className="block text-[10px] font-sans uppercase tracking-wider text-[#7A7273] mb-1.5 font-medium">
                   Photo File *
                 </label>
-                <input
-                  type="file"
-                  required
-                  accept="image/*"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0] || null;
-                    setPhotoForm({
-                      ...photoForm,
-                      file: f,
-                      previewUrl: f ? URL.createObjectURL(f) : "",
-                    });
-                  }}
-                  className="w-full text-xs font-sans file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:bg-[#1A1718] file:text-white hover:file:bg-[#D85E78]"
-                />
+                
+                {/* Drag and Drop Zone / Image Preview */}
+                <label className="relative flex flex-col items-center justify-center border-2 border-dashed border-[#DCD3D1] hover:border-[#D85E78] bg-[#FAF8F5] hover:bg-[#F8F2F2] rounded-lg p-5 cursor-pointer transition-all duration-300 group">
+                  <input
+                    type="file"
+                    required={!photoForm.file && !photoForm.previewUrl}
+                    accept="image/png,image/jpeg,image/webp,image/jpg"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0] || null;
+                      setPhotoForm({
+                        ...photoForm,
+                        file: f,
+                        previewUrl: f ? URL.createObjectURL(f) : photoForm.previewUrl,
+                      });
+                    }}
+                    className="sr-only"
+                  />
+
+                  {photoForm.previewUrl ? (
+                    <div className="relative w-full aspect-[4/3] max-h-48 rounded overflow-hidden shadow-sm bg-black/5">
+                      <Image
+                        src={photoForm.previewUrl}
+                        alt="Upload preview"
+                        fill
+                        className="object-contain"
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-sans uppercase tracking-wider font-semibold">
+                        Change Image
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center text-center space-y-2 py-4">
+                      <div className="w-12 h-12 rounded-full bg-[#FAF0F2] text-[#D85E78] flex items-center justify-center group-hover:scale-110 transition-transform shadow-xs">
+                        <Upload className="w-5 h-5 stroke-[1.8]" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-semibold text-[#1A1718] font-sans block">
+                          Click to upload or drag & drop
+                        </span>
+                        <span className="text-[10px] text-[#7A7273] font-sans">
+                          PNG, JPG, WEBP (High-res supported)
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {photoForm.file && (
+                    <div className="mt-3 flex items-center space-x-2 text-[11px] text-[#1A1718] font-sans bg-white px-3 py-1 rounded border border-[#EFE8E6] shadow-xs">
+                      <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span className="truncate max-w-[260px] font-medium">{photoForm.file.name}</span>
+                      <span className="text-[#7A7273] text-[10px]">
+                        ({(photoForm.file.size / (1024 * 1024)).toFixed(2)} MB)
+                      </span>
+                    </div>
+                  )}
+                </label>
               </div>
 
               <div>
@@ -718,7 +760,7 @@ export default function AdminDashboard() {
                   value={photoForm.title}
                   onChange={(e) => setPhotoForm({ ...photoForm, title: e.target.value })}
                   placeholder="e.g. Balcony Evening Portrait"
-                  className="w-full bg-[#FAF8F5] border border-[#EFE8E6] p-2 text-xs font-sans rounded"
+                  className="w-full bg-[#FAF8F5] border border-[#EFE8E6] focus:border-[#D85E78] focus:bg-white transition-colors p-2.5 text-xs font-sans rounded outline-none"
                 />
               </div>
 
@@ -856,42 +898,130 @@ export default function AdminDashboard() {
                 />
               </div>
 
+              {/* Video File Dropzone */}
               <div>
-                <label className="block text-[10px] font-sans uppercase tracking-wider text-[#7A7273] mb-1">
-                  Video MP4 File {!videoForm.id && "*"}
+                <label className="block text-[10px] font-sans uppercase tracking-wider text-[#7A7273] mb-1.5 font-medium">
+                  Video File {!videoForm.id && "*"}
                 </label>
-                <input
-                  type="file"
-                  accept="video/mp4,video/webm"
-                  onChange={(e) =>
-                    setVideoForm({ ...videoForm, videoFile: e.target.files?.[0] || null })
-                  }
-                  className="w-full text-xs font-sans file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:bg-[#1A1718] file:text-white hover:file:bg-[#D85E78]"
-                />
-                {videoForm.existingVideoUrl && (
-                  <p className="text-[10px] text-[#7A7273] mt-1 truncate">
-                    Current: {videoForm.existingVideoUrl}
-                  </p>
-                )}
+                
+                <label className="relative flex flex-col items-center justify-center border-2 border-dashed border-[#DCD3D1] hover:border-[#D85E78] bg-[#FAF8F5] hover:bg-[#F8F2F2] rounded-lg p-4 cursor-pointer transition-all duration-300 group">
+                  <input
+                    type="file"
+                    accept="video/mp4,video/webm,video/quicktime"
+                    onChange={(e) =>
+                      setVideoForm({ ...videoForm, videoFile: e.target.files?.[0] || null })
+                    }
+                    className="sr-only"
+                  />
+
+                  {videoForm.videoFile ? (
+                    <div className="flex items-center space-x-3 w-full bg-white p-3 rounded border border-[#EFE8E6] shadow-xs">
+                      <div className="w-9 h-9 rounded bg-[#FAF0F2] text-[#D85E78] flex items-center justify-center shrink-0">
+                        <Video className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-[#1A1718] truncate">
+                          {videoForm.videoFile.name}
+                        </p>
+                        <p className="text-[10px] text-[#7A7273]">
+                          {(videoForm.videoFile.size / (1024 * 1024)).toFixed(2)} MB · Click to replace
+                        </p>
+                      </div>
+                      <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                    </div>
+                  ) : videoForm.existingVideoUrl ? (
+                    <div className="flex items-center space-x-3 w-full bg-white p-3 rounded border border-[#EFE8E6] shadow-xs">
+                      <div className="w-9 h-9 rounded bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                        <CheckCircle className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-[#1A1718] truncate">
+                          Existing Video Attached
+                        </p>
+                        <p className="text-[10px] text-[#7A7273] truncate">
+                          {videoForm.existingVideoUrl}
+                        </p>
+                      </div>
+                      <span className="text-[10px] text-[#D85E78] font-semibold shrink-0">Replace</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center text-center space-y-1.5 py-3">
+                      <div className="w-10 h-10 rounded-full bg-[#FAF0F2] text-[#D85E78] flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Video className="w-5 h-5 stroke-[1.8]" />
+                      </div>
+                      <span className="text-xs font-semibold text-[#1A1718] font-sans">
+                        Select or drop video MP4 / WEBM
+                      </span>
+                      <span className="text-[10px] text-[#7A7273] font-sans">
+                        Direct signed Cloudinary upload (no size limit)
+                      </span>
+                    </div>
+                  )}
+                </label>
               </div>
 
+              {/* Custom Thumbnail Dropzone */}
               <div>
-                <label className="block text-[10px] font-sans uppercase tracking-wider text-[#7A7273] mb-1">
+                <label className="block text-[10px] font-sans uppercase tracking-wider text-[#7A7273] mb-1.5 font-medium">
                   Custom Video Thumbnail (Cover Image)
                 </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    setVideoForm({ ...videoForm, thumbnailFile: e.target.files?.[0] || null })
-                  }
-                  className="w-full text-xs font-sans file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:bg-[#1A1718] file:text-white hover:file:bg-[#D85E78]"
-                />
-                {videoForm.existingThumbnail && (
-                  <p className="text-[10px] text-[#7A7273] mt-1 truncate">
-                    Current Thumbnail: {videoForm.existingThumbnail}
-                  </p>
-                )}
+                
+                <label className="relative flex flex-col items-center justify-center border-2 border-dashed border-[#DCD3D1] hover:border-[#D85E78] bg-[#FAF8F5] hover:bg-[#F8F2F2] rounded-lg p-4 cursor-pointer transition-all duration-300 group">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      setVideoForm({ ...videoForm, thumbnailFile: e.target.files?.[0] || null })
+                    }
+                    className="sr-only"
+                  />
+
+                  {videoForm.thumbnailFile ? (
+                    <div className="flex items-center space-x-3 w-full bg-white p-3 rounded border border-[#EFE8E6] shadow-xs">
+                      <div className="w-9 h-9 rounded bg-[#FAF0F2] text-[#D85E78] flex items-center justify-center shrink-0">
+                        <ImageIcon className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-[#1A1718] truncate">
+                          {videoForm.thumbnailFile.name}
+                        </p>
+                        <p className="text-[10px] text-[#7A7273]">
+                          {(videoForm.thumbnailFile.size / (1024 * 1024)).toFixed(2)} MB · Click to replace
+                        </p>
+                      </div>
+                      <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                    </div>
+                  ) : videoForm.existingThumbnail ? (
+                    <div className="flex items-center space-x-3 w-full bg-white p-3 rounded border border-[#EFE8E6] shadow-xs">
+                      <div className="relative w-10 h-10 rounded overflow-hidden shrink-0 bg-black/5">
+                        <Image
+                          src={videoForm.existingThumbnail}
+                          alt="Thumbnail preview"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-[#1A1718] truncate">
+                          Current Thumbnail
+                        </p>
+                        <p className="text-[10px] text-[#7A7273] truncate">
+                          {videoForm.existingThumbnail}
+                        </p>
+                      </div>
+                      <span className="text-[10px] text-[#D85E78] font-semibold shrink-0">Change</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center text-center space-y-1 py-2">
+                      <div className="w-9 h-9 rounded-full bg-[#FAF0F2] text-[#D85E78] flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <ImageIcon className="w-4 h-4 stroke-[1.8]" />
+                      </div>
+                      <span className="text-xs font-medium text-[#1A1718] font-sans">
+                        Add custom thumbnail image
+                      </span>
+                    </div>
+                  )}
+                </label>
               </div>
 
               <div>
