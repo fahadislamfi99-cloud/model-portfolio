@@ -94,7 +94,9 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "",
+    google:
+      process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
+      "MaeD821bEDTG4zdAERGgoJk67h6eyQvPmbd92HRw3mo",
   },
 };
 
@@ -104,7 +106,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const gaId = process.env.NEXT_PUBLIC_GA_ID || "G-PZMH9J70LT";
 
   const personJsonLd = {
     "@context": "https://schema.org",
