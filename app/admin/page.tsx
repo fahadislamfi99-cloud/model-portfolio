@@ -17,6 +17,9 @@ import {
   AlertCircle,
   Play,
   Layers,
+  GripVertical,
+  Smartphone,
+  Film,
 } from "lucide-react";
 
 interface PhotoItem {
@@ -44,7 +47,8 @@ interface VideoDoc {
 }
 
 export default function AdminDashboard() {
-  const [tab, setTab] = useState<"photos" | "videos">("photos");
+  const [tab, setTab] = useState<"photos" | "reels" | "long_videos">("reels");
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   // Photos State
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
@@ -354,6 +358,66 @@ export default function AdminDashboard() {
     }
   };
 
+  // Drag and drop reordering
+  const handleReorder = async (
+    listType: "photos" | "reels" | "long_videos",
+    fromIndex: number,
+    toIndex: number
+  ) => {
+    if (fromIndex === toIndex) return;
+
+    if (listType === "photos") {
+      const updated = [...photos];
+      const [moved] = updated.splice(fromIndex, 1);
+      updated.splice(toIndex, 0, moved);
+      const reindexed = updated.map((p, idx) => ({ ...p, order: idx }));
+      setPhotos(reindexed);
+
+      try {
+        await fetch("/api/admin/reorder", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            collection: "photos",
+            items: reindexed.map((p) => ({ id: p._id, order: p.order })),
+          }),
+        });
+        showToast("success", "Photo sequence updated");
+      } catch {
+        showToast("error", "Failed to save sequence");
+      }
+    } else {
+      const isReel = listType === "reels";
+      const targetItems = videos.filter((v) =>
+        isReel ? v.format === "reel" : v.format === "widescreen"
+      );
+      const otherItems = videos.filter((v) =>
+        isReel ? v.format !== "reel" : v.format !== "widescreen"
+      );
+
+      const updated = [...targetItems];
+      const [moved] = updated.splice(fromIndex, 1);
+      updated.splice(toIndex, 0, moved);
+      const reindexed = updated.map((v, idx) => ({ ...v, order: idx }));
+
+      setVideos([...otherItems, ...reindexed]);
+
+      try {
+        await fetch("/api/admin/reorder", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            collection: "videos",
+            items: reindexed.map((v) => ({ id: v._id, order: v.order })),
+          }),
+        });
+        showToast("success", `${isReel ? "Reels" : "Long videos"} sequence updated`);
+      } catch {
+        showToast("error", "Failed to save sequence");
+      }
+    }
+  };
+
   // Delete Video
   const handleDeleteVideo = async (id: string) => {
     if (!confirm("Are you sure you want to delete this video?")) return;
@@ -427,7 +491,31 @@ export default function AdminDashboard() {
       <main className="max-w-[1400px] mx-auto px-6 py-8">
         {/* Navigation Tabs & Action Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EFE8E6] pb-6 mb-8">
-          <div className="flex space-x-2">
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setTab("reels")}
+              className={`flex items-center space-x-2 px-5 py-2.5 rounded font-sans text-xs tracking-wider uppercase font-semibold transition-all ${
+                tab === "reels"
+                  ? "bg-[#1A1718] text-white shadow-sm"
+                  : "bg-white text-[#7A7273] border border-[#EFE8E6] hover:text-[#1A1718]"
+              }`}
+            >
+              <Smartphone className="w-4 h-4" />
+              <span>Short Reels 9:16 ({videos.filter((v) => v.format === "reel").length})</span>
+            </button>
+
+            <button
+              onClick={() => setTab("long_videos")}
+              className={`flex items-center space-x-2 px-5 py-2.5 rounded font-sans text-xs tracking-wider uppercase font-semibold transition-all ${
+                tab === "long_videos"
+                  ? "bg-[#1A1718] text-white shadow-sm"
+                  : "bg-white text-[#7A7273] border border-[#EFE8E6] hover:text-[#1A1718]"
+              }`}
+            >
+              <Film className="w-4 h-4" />
+              <span>Long Videos 16:9 ({videos.filter((v) => v.format === "widescreen").length})</span>
+            </button>
+
             <button
               onClick={() => setTab("photos")}
               className={`flex items-center space-x-2 px-5 py-2.5 rounded font-sans text-xs tracking-wider uppercase font-semibold transition-all ${
@@ -439,22 +527,10 @@ export default function AdminDashboard() {
               <ImageIcon className="w-4 h-4" />
               <span>Photos ({photos.length})</span>
             </button>
-
-            <button
-              onClick={() => setTab("videos")}
-              className={`flex items-center space-x-2 px-5 py-2.5 rounded font-sans text-xs tracking-wider uppercase font-semibold transition-all ${
-                tab === "videos"
-                  ? "bg-[#1A1718] text-white shadow-sm"
-                  : "bg-white text-[#7A7273] border border-[#EFE8E6] hover:text-[#1A1718]"
-              }`}
-            >
-              <Video className="w-4 h-4" />
-              <span>Videos & Reels ({videos.length})</span>
-            </button>
           </div>
 
           <div>
-            {tab === "photos" ? (
+            {tab === "photos" && (
               <button
                 onClick={() => setShowPhotoModal(true)}
                 className="inline-flex items-center space-x-2 px-5 py-2.5 bg-[#D85E78] hover:bg-[#C24B65] text-white text-xs tracking-wider font-sans uppercase font-semibold rounded shadow transition-colors"
@@ -462,7 +538,9 @@ export default function AdminDashboard() {
                 <Plus className="w-4 h-4" />
                 <span>Upload New Photo</span>
               </button>
-            ) : (
+            )}
+
+            {tab === "reels" && (
               <button
                 onClick={() => {
                   setVideoForm({
@@ -470,6 +548,32 @@ export default function AdminDashboard() {
                     title: "",
                     category: "FASHION REEL",
                     format: "reel",
+                    duration: "00:30",
+                    telegramUrl: "https://t.me/comatozze_new",
+                    description: "",
+                    videoFile: null,
+                    thumbnailFile: null,
+                    existingVideoUrl: "",
+                    existingThumbnail: "",
+                    order: videos.filter((v) => v.format === "reel").length,
+                  });
+                  setShowVideoModal(true);
+                }}
+                className="inline-flex items-center space-x-2 px-5 py-2.5 bg-[#D85E78] hover:bg-[#C24B65] text-white text-xs tracking-wider font-sans uppercase font-semibold rounded shadow transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Upload New Reel (9:16)</span>
+              </button>
+            )}
+
+            {tab === "long_videos" && (
+              <button
+                onClick={() => {
+                  setVideoForm({
+                    id: "",
+                    title: "",
+                    category: "WIDESCREEN FEATURE",
+                    format: "widescreen",
                     duration: "15:42",
                     telegramUrl: "https://t.me/comatozze_new",
                     description: "",
@@ -477,14 +581,14 @@ export default function AdminDashboard() {
                     thumbnailFile: null,
                     existingVideoUrl: "",
                     existingThumbnail: "",
-                    order: 0,
+                    order: videos.filter((v) => v.format === "widescreen").length,
                   });
                   setShowVideoModal(true);
                 }}
                 className="inline-flex items-center space-x-2 px-5 py-2.5 bg-[#D85E78] hover:bg-[#C24B65] text-white text-xs tracking-wider font-sans uppercase font-semibold rounded shadow transition-colors"
               >
                 <Plus className="w-4 h-4" />
-                <span>Add New Video / Reel</span>
+                <span>Upload Long Video (16:9)</span>
               </button>
             )}
           </div>
@@ -493,6 +597,15 @@ export default function AdminDashboard() {
         {/* PHOTOS TAB */}
         {tab === "photos" && (
           <div>
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-xs font-sans text-[#7A7273]">
+                Drag photo cards using the handle to reorder live layout sequence.
+              </p>
+              <span className="text-xs font-sans font-medium text-[#D85E78]">
+                {photos.length} Photos
+              </span>
+            </div>
+
             {loadingPhotos ? (
               <div className="py-20 text-center flex flex-col items-center justify-center text-[#7A7273]">
                 <Loader2 className="w-8 h-8 animate-spin text-[#D85E78] mb-3" />
@@ -503,17 +616,28 @@ export default function AdminDashboard() {
                 <p className="text-sm font-sans text-[#7A7273] mb-4">No photos found in database.</p>
                 <button
                   onClick={() => setShowPhotoModal(true)}
-                  className="px-5 py-2 bg-[#D85E78] text-white text-xs uppercase tracking-wider rounded"
+                  className="px-5 py-2 bg-[#D85E78] text-white text-xs uppercase tracking-wider rounded font-sans font-medium"
                 >
                   Upload First Photo
                 </button>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {photos.map((item) => (
+                {photos.map((item, idx) => (
                   <div
                     key={item._id}
-                    className="bg-white border border-[#EFE8E6] rounded overflow-hidden shadow-xs group flex flex-col justify-between"
+                    draggable
+                    onDragStart={() => setDraggedIndex(idx)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={() => {
+                      if (draggedIndex !== null) {
+                        handleReorder("photos", draggedIndex, idx);
+                        setDraggedIndex(null);
+                      }
+                    }}
+                    className={`bg-white border border-[#EFE8E6] rounded overflow-hidden shadow-xs group flex flex-col justify-between transition-all duration-200 cursor-move ${
+                      draggedIndex === idx ? "opacity-40 scale-95 border-dashed border-[#D85E78]" : "hover:shadow-md"
+                    }`}
                   >
                     <div className="relative aspect-[3/4] w-full bg-[#1A1718] overflow-hidden">
                       <Image
@@ -523,8 +647,11 @@ export default function AdminDashboard() {
                         sizes="(max-width: 640px) 50vw, 20vw"
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
-                      <div className="absolute top-2 left-2 px-2 py-0.5 bg-black/60 text-[9px] font-sans text-white uppercase rounded">
+                      <div className="absolute top-2 left-2 px-2 py-0.5 bg-black/70 text-[9px] font-sans text-white uppercase rounded">
                         {item.section}
+                      </div>
+                      <div className="absolute top-2 right-2 p-1 bg-black/60 text-white rounded opacity-80 group-hover:opacity-100">
+                        <GripVertical className="w-3.5 h-3.5" />
                       </div>
                     </div>
 
@@ -537,8 +664,8 @@ export default function AdminDashboard() {
                       </p>
 
                       <div className="mt-3 pt-2 border-t border-[#EFE8E6] flex items-center justify-between">
-                        <span className="text-[9px] font-sans text-[#A09899]">
-                          Order: {item.order}
+                        <span className="text-[9px] font-sans text-[#A09899] font-medium">
+                          #{idx + 1}
                         </span>
                         <button
                           disabled={deletingId === item._id}
@@ -561,119 +688,327 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* VIDEOS TAB */}
-        {tab === "videos" && (
+        {/* SHORT REELS 9:16 TAB */}
+        {tab === "reels" && (
           <div>
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-xs font-sans text-[#7A7273]">
+                Vertical 9:16 reels for homepage & videos grid. Drag cards by handle to rearrange order.
+              </p>
+              <span className="text-xs font-sans font-medium text-[#D85E78]">
+                {videos.filter((v) => v.format === "reel").length} Reels
+              </span>
+            </div>
+
             {loadingVideos ? (
               <div className="py-20 text-center flex flex-col items-center justify-center text-[#7A7273]">
                 <Loader2 className="w-8 h-8 animate-spin text-[#D85E78] mb-3" />
-                <p className="font-sans text-xs uppercase tracking-widest">Loading Videos from MongoDB...</p>
+                <p className="font-sans text-xs uppercase tracking-widest">Loading Reels...</p>
               </div>
-            ) : videos.length === 0 ? (
+            ) : videos.filter((v) => v.format === "reel").length === 0 ? (
               <div className="py-16 text-center bg-white border border-[#EFE8E6] rounded p-8">
-                <p className="text-sm font-sans text-[#7A7273] mb-4">No videos found in database.</p>
+                <Smartphone className="w-10 h-10 text-[#D85E78] mx-auto mb-3 opacity-60" />
+                <p className="text-sm font-sans text-[#7A7273] mb-4">No vertical reels in database yet.</p>
                 <button
-                  onClick={() => setShowVideoModal(true)}
-                  className="px-5 py-2 bg-[#D85E78] text-white text-xs uppercase tracking-wider rounded"
+                  onClick={() => {
+                    setVideoForm({
+                      id: "",
+                      title: "",
+                      category: "FASHION REEL",
+                      format: "reel",
+                      duration: "00:30",
+                      telegramUrl: "https://t.me/comatozze_new",
+                      description: "",
+                      videoFile: null,
+                      thumbnailFile: null,
+                      existingVideoUrl: "",
+                      existingThumbnail: "",
+                      order: 0,
+                    });
+                    setShowVideoModal(true);
+                  }}
+                  className="px-5 py-2 bg-[#D85E78] text-white text-xs uppercase tracking-wider rounded font-sans font-medium"
                 >
-                  Add First Video
+                  Upload First Reel
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {videos.map((vid) => (
-                  <div
-                    key={vid._id}
-                    className="bg-white border border-[#EFE8E6] rounded overflow-hidden shadow-xs flex flex-col justify-between"
-                  >
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {videos
+                  .filter((v) => v.format === "reel")
+                  .map((vid, idx) => (
                     <div
-                      className={`relative w-full bg-[#1A1718] overflow-hidden ${
-                        vid.format === "reel" ? "aspect-[9/16] max-h-80 mx-auto" : "aspect-video"
+                      key={vid._id}
+                      draggable
+                      onDragStart={() => setDraggedIndex(idx)}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={() => {
+                        if (draggedIndex !== null) {
+                          handleReorder("reels", draggedIndex, idx);
+                          setDraggedIndex(null);
+                        }
+                      }}
+                      className={`bg-white border border-[#EFE8E6] rounded overflow-hidden shadow-xs flex flex-col justify-between transition-all duration-200 cursor-move ${
+                        draggedIndex === idx ? "opacity-40 scale-95 border-dashed border-[#D85E78]" : "hover:shadow-md"
                       }`}
                     >
-                      <Image
-                        src={vid.thumbnail}
-                        alt={vid.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover"
-                      />
-                      <div className="absolute top-2 right-2 px-2 py-0.5 bg-black/70 text-white font-sans text-[10px] rounded">
-                        {vid.duration}
+                      <div className="relative w-full aspect-[9/16] bg-[#1A1718] overflow-hidden group">
+                        <Image
+                          src={vid.thumbnail}
+                          alt={vid.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 25vw"
+                          className="object-cover"
+                        />
+                        <div className="absolute top-2 right-2 px-2 py-0.5 bg-black/75 text-white font-sans text-[10px] rounded backdrop-blur-xs">
+                          {vid.duration}
+                        </div>
+                        <div className="absolute top-2 left-2 flex items-center space-x-1.5">
+                          <span className="px-2 py-0.5 bg-[#D85E78] text-white font-sans text-[9px] uppercase tracking-wider rounded">
+                            Reel 9:16
+                          </span>
+                          <span className="px-1.5 py-0.5 bg-black/60 text-white font-sans text-[9px] rounded">
+                            #{idx + 1}
+                          </span>
+                        </div>
+                        <div className="absolute bottom-2 right-2 p-1.5 bg-black/60 text-white rounded opacity-80 group-hover:opacity-100 flex items-center space-x-1">
+                          <GripVertical className="w-3.5 h-3.5" />
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="w-10 h-10 rounded-full bg-black/50 border border-white/80 flex items-center justify-center">
+                            <Play className="w-4 h-4 text-white ml-0.5" fill="white" />
+                          </div>
+                        </div>
                       </div>
-                      <div className="absolute top-2 left-2 px-2 py-0.5 bg-[#D85E78] text-white font-sans text-[9px] uppercase tracking-wider rounded">
-                        {vid.format}
-                      </div>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-10 h-10 rounded-full bg-black/50 border border-white/80 flex items-center justify-center">
-                          <Play className="w-4 h-4 text-white ml-0.5" fill="white" />
+
+                      <div className="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                          <span className="text-[9px] tracking-wider uppercase font-sans text-[#D85E78] font-semibold block mb-1">
+                            {vid.category}
+                          </span>
+                          <h4 className="font-editorial-serif text-lg text-[#1A1718] leading-snug">
+                            {vid.title}
+                          </h4>
+                          <p className="text-xs font-sans text-[#7A7273] mt-1 line-clamp-2">
+                            {vid.description}
+                          </p>
+                        </div>
+
+                        <div className="mt-4 pt-3 border-t border-[#EFE8E6] flex items-center justify-between text-xs">
+                          <a
+                            href={vid.telegramUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[11px] font-sans text-[#229ED9] hover:underline flex items-center space-x-1"
+                          >
+                            <span>Telegram</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+
+                          <div className="flex items-center space-x-2">
+                            <button
+                              onClick={() => {
+                                setVideoForm({
+                                  id: vid._id,
+                                  title: vid.title,
+                                  category: vid.category,
+                                  format: vid.format,
+                                  duration: vid.duration,
+                                  telegramUrl: vid.telegramUrl,
+                                  description: vid.description,
+                                  videoFile: null,
+                                  thumbnailFile: null,
+                                  existingVideoUrl: vid.videoUrl,
+                                  existingThumbnail: vid.thumbnail,
+                                  order: vid.order,
+                                });
+                                setShowVideoModal(true);
+                              }}
+                              className="p-1 text-slate-600 hover:text-[#1A1718]"
+                              title="Edit reel"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              disabled={deletingId === vid._id}
+                              onClick={() => handleDeleteVideo(vid._id)}
+                              className="p-1 text-rose-600 hover:text-rose-800 transition-colors disabled:opacity-50"
+                              title="Delete reel"
+                            >
+                              {deletingId === vid._id ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              ) : (
+                                <Trash2 className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
+                  ))}
+              </div>
+            )}
+          </div>
+        )}
 
-                    <div className="p-4">
-                      <span className="text-[9px] tracking-wider uppercase font-sans text-[#D85E78] font-semibold block mb-1">
-                        {vid.category}
-                      </span>
-                      <h4 className="font-editorial-serif text-lg text-[#1A1718] leading-snug">
-                        {vid.title}
-                      </h4>
-                      <p className="text-xs font-sans text-[#7A7273] mt-1 line-clamp-2">
-                        {vid.description}
-                      </p>
+        {/* LONG VIDEOS 16:9 TAB */}
+        {tab === "long_videos" && (
+          <div>
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-xs font-sans text-[#7A7273]">
+                Cinematic widescreen 16:9 features. Displays fake duration (15:42, 21:18) with Telegram uncut link.
+              </p>
+              <span className="text-xs font-sans font-medium text-[#D85E78]">
+                {videos.filter((v) => v.format === "widescreen").length} Long Videos
+              </span>
+            </div>
 
-                      <div className="mt-3 pt-3 border-t border-[#EFE8E6] flex items-center justify-between text-xs">
-                        <a
-                          href={vid.telegramUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[11px] font-sans text-[#229ED9] hover:underline flex items-center space-x-1"
-                        >
-                          <span>Telegram Link</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
+            {loadingVideos ? (
+              <div className="py-20 text-center flex flex-col items-center justify-center text-[#7A7273]">
+                <Loader2 className="w-8 h-8 animate-spin text-[#D85E78] mb-3" />
+                <p className="font-sans text-xs uppercase tracking-widest">Loading Long Videos...</p>
+              </div>
+            ) : videos.filter((v) => v.format === "widescreen").length === 0 ? (
+              <div className="py-16 text-center bg-white border border-[#EFE8E6] rounded p-8">
+                <Film className="w-10 h-10 text-[#D85E78] mx-auto mb-3 opacity-60" />
+                <p className="text-sm font-sans text-[#7A7273] mb-4">No widescreen videos in database yet.</p>
+                <button
+                  onClick={() => {
+                    setVideoForm({
+                      id: "",
+                      title: "",
+                      category: "WIDESCREEN FEATURE",
+                      format: "widescreen",
+                      duration: "15:42",
+                      telegramUrl: "https://t.me/comatozze_new",
+                      description: "",
+                      videoFile: null,
+                      thumbnailFile: null,
+                      existingVideoUrl: "",
+                      existingThumbnail: "",
+                      order: 0,
+                    });
+                    setShowVideoModal(true);
+                  }}
+                  className="px-5 py-2 bg-[#D85E78] text-white text-xs uppercase tracking-wider rounded font-sans font-medium"
+                >
+                  Upload First Long Video
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {videos
+                  .filter((v) => v.format === "widescreen")
+                  .map((vid, idx) => (
+                    <div
+                      key={vid._id}
+                      draggable
+                      onDragStart={() => setDraggedIndex(idx)}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={() => {
+                        if (draggedIndex !== null) {
+                          handleReorder("long_videos", draggedIndex, idx);
+                          setDraggedIndex(null);
+                        }
+                      }}
+                      className={`bg-white border border-[#EFE8E6] rounded overflow-hidden shadow-xs flex flex-col justify-between transition-all duration-200 cursor-move ${
+                        draggedIndex === idx ? "opacity-40 scale-95 border-dashed border-[#D85E78]" : "hover:shadow-md"
+                      }`}
+                    >
+                      <div className="relative w-full aspect-video bg-[#1A1718] overflow-hidden group">
+                        <Image
+                          src={vid.thumbnail}
+                          alt={vid.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          className="object-cover"
+                        />
+                        <div className="absolute top-2 right-2 px-2 py-0.5 bg-black/75 text-white font-sans text-[10px] rounded backdrop-blur-xs">
+                          {vid.duration}
+                        </div>
+                        <div className="absolute top-2 left-2 flex items-center space-x-1.5">
+                          <span className="px-2 py-0.5 bg-[#1A1718] text-white border border-[#D85E78]/50 font-sans text-[9px] uppercase tracking-wider rounded">
+                            Long Video 16:9
+                          </span>
+                          <span className="px-1.5 py-0.5 bg-black/60 text-white font-sans text-[9px] rounded">
+                            #{idx + 1}
+                          </span>
+                        </div>
+                        <div className="absolute bottom-2 right-2 p-1.5 bg-black/60 text-white rounded opacity-80 group-hover:opacity-100 flex items-center space-x-1">
+                          <GripVertical className="w-3.5 h-3.5" />
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="w-12 h-12 rounded-full bg-black/50 border border-white/80 flex items-center justify-center">
+                            <Play className="w-5 h-5 text-white ml-0.5" fill="white" />
+                          </div>
+                        </div>
+                      </div>
 
-                        <div className="flex items-center space-x-2">
-                          <button
-                            onClick={() => {
-                              setVideoForm({
-                                id: vid._id,
-                                title: vid.title,
-                                category: vid.category,
-                                format: vid.format,
-                                duration: vid.duration,
-                                telegramUrl: vid.telegramUrl,
-                                description: vid.description,
-                                videoFile: null,
-                                thumbnailFile: null,
-                                existingVideoUrl: vid.videoUrl,
-                                existingThumbnail: vid.thumbnail,
-                                order: vid.order,
-                              });
-                              setShowVideoModal(true);
-                            }}
-                            className="p-1 text-slate-600 hover:text-[#1A1718]"
-                            title="Edit details"
+                      <div className="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                          <span className="text-[9px] tracking-wider uppercase font-sans text-[#D85E78] font-semibold block mb-1">
+                            {vid.category}
+                          </span>
+                          <h4 className="font-editorial-serif text-lg text-[#1A1718] leading-snug">
+                            {vid.title}
+                          </h4>
+                          <p className="text-xs font-sans text-[#7A7273] mt-1 line-clamp-2">
+                            {vid.description}
+                          </p>
+                        </div>
+
+                        <div className="mt-4 pt-3 border-t border-[#EFE8E6] flex items-center justify-between text-xs">
+                          <a
+                            href={vid.telegramUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[11px] font-sans text-[#229ED9] hover:underline flex items-center space-x-1"
                           >
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            disabled={deletingId === vid._id}
-                            onClick={() => handleDeleteVideo(vid._id)}
-                            className="p-1 text-rose-600 hover:text-rose-800 transition-colors disabled:opacity-50"
-                            title="Delete video"
-                          >
-                            {deletingId === vid._id ? (
-                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                            ) : (
-                              <Trash2 className="w-3.5 h-3.5" />
-                            )}
-                          </button>
+                            <span>Telegram</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+
+                          <div className="flex items-center space-x-2">
+                            <button
+                              onClick={() => {
+                                setVideoForm({
+                                  id: vid._id,
+                                  title: vid.title,
+                                  category: vid.category,
+                                  format: vid.format,
+                                  duration: vid.duration,
+                                  telegramUrl: vid.telegramUrl,
+                                  description: vid.description,
+                                  videoFile: null,
+                                  thumbnailFile: null,
+                                  existingVideoUrl: vid.videoUrl,
+                                  existingThumbnail: vid.thumbnail,
+                                  order: vid.order,
+                                });
+                                setShowVideoModal(true);
+                              }}
+                              className="p-1 text-slate-600 hover:text-[#1A1718]"
+                              title="Edit details"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              disabled={deletingId === vid._id}
+                              onClick={() => handleDeleteVideo(vid._id)}
+                              className="p-1 text-rose-600 hover:text-rose-800 transition-colors disabled:opacity-50"
+                              title="Delete video"
+                            >
+                              {deletingId === vid._id ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              ) : (
+                                <Trash2 className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             )}
           </div>
