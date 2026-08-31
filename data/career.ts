@@ -15,65 +15,65 @@ export interface CareerStat {
 export const careerTimeline: CareerMilestone[] = [
   {
     year: "2026",
-    title: "Global Capsule Presentation",
-    category: "CAMPAIGN",
-    description: "Lead model for international luxury house Spring/Summer digital showcase.",
-    location: "Paris"
+    title: "AVN Awards Winner & Cover Star",
+    category: "GLOBAL AWARD",
+    description: "Awarded Fan-Voted Hottest New Creator at the 2026 AVN Awards and featured on the cover of AVN Magazine with an in-depth career retrospective.",
+    location: "Las Vegas / Europe"
   },
   {
     year: "2025",
-    title: "Milan Ready-to-Wear Presentations",
-    category: "RUNWAY",
-    description: "Walked for premier Italian ateliers across Milan Fashion Week schedule.",
-    location: "Milan"
+    title: "#1 Ranked Creator Worldwide & Pornhub Award",
+    category: "MILESTONE",
+    description: "Won Most Popular Couple at the 2025 Awards after surpassing 660+ million views across 160 self-produced uploads, earning Creator of the Year recognition.",
+    location: "Global"
   },
   {
     year: "2024",
-    title: "International Magazine Cover & Editorial",
-    category: "EDITORIAL",
-    description: "Ten-page solo fashion spread focusing on architectural tailoring and jewelry.",
-    location: "New York"
-  },
-  {
-    year: "2023",
-    title: "Boutique Fragrance & Beauty Muse",
-    category: "BEAUTY",
-    description: "Global digital and print campaign for boutique artisanal perfumery.",
-    location: "London"
+    title: "Breakthrough Face Reveal & Fansly Premiere",
+    category: "PRODUCTION",
+    description: "Launched dedicated channel and regular self-directed productions with partner, transitioning to full-face reveals and establishing her primary subscriber hub on Fansly.",
+    location: "Europe"
   },
   {
     year: "2022",
-    title: "European Runway Debut",
-    category: "MILESTONE",
-    description: "First official catwalk season for contemporary European designer collective.",
-    location: "Paris"
+    title: "First Independent Filming",
+    category: "ORIGIN",
+    description: "Began shooting spontaneous, intimate home videos with partner at age 19, cultivating her signature cozy, candid storytelling aesthetic.",
+    location: "Podolsk, Russia"
+  },
+  {
+    year: "2021",
+    title: "Beauty Studio Founder",
+    category: "ENTREPRENEUR",
+    description: "Trained nail artist and young beauty entrepreneur, launching and successfully operating her own boutique beauty studio by age 18.",
+    location: "Russia"
   }
 ];
 
 export const careerStats: CareerStat[] = [
   {
-    value: "05+",
-    label: "Years in Industry",
-    note: "Professional runway & studio experience"
+    value: "660M+",
+    label: "Total Video Views",
+    note: "#1 ranked global amateur creator"
   },
   {
-    value: "50+",
-    label: "Projects Completed",
-    note: "Campaigns, editorials & lookbooks"
+    value: "1M+",
+    label: "Dedicated Subscribers",
+    note: "Across primary verified platforms"
   },
   {
-    value: "12+",
-    label: "Countries Worked",
-    note: "Paris, Milan, New York, Tokyo, Vienna"
+    value: "03+",
+    label: "Major Industry Awards",
+    note: "AVN, Pornhub & xHamster winner"
   },
   {
-    value: "30+",
-    label: "Designers & Brands",
-    note: "Couture, luxury RTW & accessories"
+    value: "100%",
+    label: "Independent & Self-Produced",
+    note: "Zero agencies or corporate studios"
   },
   {
-    value: "15+",
-    label: "Editorial Spreads",
-    note: "Print & digital publications"
+    value: "21",
+    label: "Years of Age",
+    note: "Born 2004–2005 · Podolsk, Russia"
   }
 ];

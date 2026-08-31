@@ -2,29 +2,29 @@ import { Crown, Camera, Globe, Star, BookOpen } from "lucide-react";
 
 const stats = [
   {
-    icon: Crown,
-    value: "5+",
-    label: "Years of Experience",
+    icon: Globe,
+    value: "660M+",
+    label: "Total Video Views (#1 Amateur)",
   },
   {
     icon: Camera,
-    value: "50+",
-    label: "Projects Completed",
+    value: "1M+",
+    label: "Subscribers Worldwide",
   },
   {
-    icon: Globe,
-    value: "12+",
-    label: "Countries Worked",
+    icon: Crown,
+    value: "3+",
+    label: "Major Awards (AVN, Pornhub)",
   },
   {
     icon: Star,
-    value: "30+",
-    label: "Brands Collaborated",
+    value: "100%",
+    label: "Self-Produced & Independent",
   },
   {
     icon: BookOpen,
-    value: "15+",
-    label: "Editorial Publications",
+    value: "2026",
+    label: "AVN Magazine Cover Star",
   },
 ];
 

@@ -70,10 +70,10 @@ export default function AboutPage() {
             <ScrollReveal delay={250}>
               <div className="pt-4">
                 <Link
-                  href="/contact"
+                  href="/gallery"
                   className="inline-flex items-center space-x-3 text-xs tracking-[0.25em] font-sans uppercase px-6 py-3.5 bg-[#191617] text-[#FAF8F5] hover:bg-[#C98A90] transition-colors"
                 >
-                  <span>INQUIRE ABOUT BOOKINGS</span>
+                  <span>EXPLORE PHOTO GALLERY</span>
                   <ArrowUpRight className="w-4 h-4 text-[#C98A90]" />
                 </Link>
               </div>
@@ -93,44 +93,56 @@ export default function AboutPage() {
               </h3>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-8 text-left">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8 text-left">
+              <div className="border-l border-[#E8DFDC] pl-4">
+                <span className="text-[10px] tracking-[0.25em] text-[#7A7273] uppercase block mb-1">AGE</span>
+                <span className="font-editorial-serif text-2xl text-[#1A1718]">{modelData.stats.age}</span>
+              </div>
               <div className="border-l border-[#E8DFDC] pl-4">
                 <span className="text-[10px] tracking-[0.25em] text-[#7A7273] uppercase block mb-1">HEIGHT</span>
-                <span className="font-editorial-serif text-2xl text-[#191617]">{modelData.stats.height}</span>
+                <span className="font-editorial-serif text-2xl text-[#1A1718]">{modelData.stats.height}</span>
+              </div>
+              <div className="border-l border-[#E8DFDC] pl-4">
+                <span className="text-[10px] tracking-[0.25em] text-[#7A7273] uppercase block mb-1">WEIGHT</span>
+                <span className="font-editorial-serif text-2xl text-[#1A1718]">{modelData.stats.weight}</span>
               </div>
               <div className="border-l border-[#E8DFDC] pl-4">
                 <span className="text-[10px] tracking-[0.25em] text-[#7A7273] uppercase block mb-1">HAIR</span>
-                <span className="font-editorial-serif text-2xl text-[#191617]">{modelData.stats.hair}</span>
+                <span className="font-editorial-serif text-2xl text-[#1A1718]">{modelData.stats.hair}</span>
               </div>
               <div className="border-l border-[#E8DFDC] pl-4">
                 <span className="text-[10px] tracking-[0.25em] text-[#7A7273] uppercase block mb-1">EYES</span>
-                <span className="font-editorial-serif text-2xl text-[#191617]">{modelData.stats.eyes}</span>
+                <span className="font-editorial-serif text-2xl text-[#1A1718]">{modelData.stats.eyes}</span>
               </div>
               <div className="border-l border-[#E8DFDC] pl-4">
-                <span className="text-[10px] tracking-[0.25em] text-[#7A7273] uppercase block mb-1">DRESS</span>
-                <span className="font-editorial-serif text-2xl text-[#191617]">{modelData.stats.dress}</span>
-              </div>
-              <div className="border-l border-[#E8DFDC] pl-4">
-                <span className="text-[10px] tracking-[0.25em] text-[#7A7273] uppercase block mb-1">SHOE</span>
-                <span className="font-editorial-serif text-2xl text-[#191617]">{modelData.stats.shoe}</span>
-              </div>
-              <div className="border-l border-[#E8DFDC] pl-4">
-                <span className="text-[10px] tracking-[0.25em] text-[#7A7273] uppercase block mb-1">LOCATION</span>
-                <span className="font-editorial-serif text-2xl text-[#191617]">{modelData.stats.location}</span>
+                <span className="text-[10px] tracking-[0.25em] text-[#7A7273] uppercase block mb-1">ORIGIN</span>
+                <span className="font-editorial-serif text-2xl text-[#1A1718]">Podolsk, Russia</span>
               </div>
             </div>
 
-            {/* Specialties Badges */}
-            <div className="mt-12 pt-8 border-t border-[#E8DFDC] flex flex-wrap items-center gap-3">
-              <span className="text-[10px] tracking-[0.25em] text-[#7A7273] uppercase mr-2">DISCIPLINES:</span>
-              {modelData.stats.specialties.map((spec) => (
-                <span
-                  key={spec}
-                  className="text-xs font-sans px-3 py-1.5 border border-[#E8DFDC] text-[#191617] bg-[#F7EFEF]/50"
-                >
-                  {spec}
-                </span>
-              ))}
+            {/* Distinguishing Features */}
+            <div className="mt-8 pt-8 border-t border-[#E8DFDC] grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs font-sans text-[#5C5556]">
+              <div>
+                <span className="font-semibold text-[#1A1718] uppercase tracking-wider block mb-1">DISTINGUISHING FEATURES:</span>
+                <p>{modelData.stats.tattoos}</p>
+                <p className="mt-1">{modelData.stats.piercings}</p>
+              </div>
+              <div>
+                <span className="font-semibold text-[#1A1718] uppercase tracking-wider block mb-1">CREATIVE PURSUITS:</span>
+                <p>{modelData.interests.join(" · ")}</p>
+              </div>
+            </div>
+
+            {/* Industry Awards */}
+            <div className="mt-8 pt-8 border-t border-[#E8DFDC]">
+              <span className="text-[10px] tracking-[0.25em] text-[#D85E78] uppercase block font-semibold mb-3">HONORS & AWARDS:</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {modelData.awards.map((award, i) => (
+                  <div key={i} className="p-3 border border-[#E8DFDC] bg-[#FAF8F5] text-xs font-sans text-[#1A1718]">
+                    {award}
+                  </div>
+                ))}
+              </div>
             </div>
           </ScrollReveal>
         </section>

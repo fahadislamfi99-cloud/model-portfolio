@@ -9,18 +9,30 @@ export function BookingCTA() {
           {/* Left Text & CTA */}
           <div className="lg:col-span-6 flex flex-col items-start">
             <h2 className="font-editorial-serif text-4xl sm:text-5xl lg:text-6xl text-[#1A1718] font-normal leading-[1.05] mb-4">
-              Let&apos;s Create <br />
-              Something Iconic
+              Explore More <br />
+              Exclusive Content
             </h2>
             <p className="font-sans text-xs sm:text-sm text-[#5C5556] leading-relaxed max-w-md mb-8">
-              For bookings, collaborations and professional inquiries.
+              Stay updated with daily drops, full-length episodes, behind-the-scenes moments, and direct community on Fansly and Telegram.
             </p>
-            <Link
-              href="/contact"
-              className="inline-block text-[10px] tracking-[0.25em] font-sans font-semibold uppercase px-8 py-3.5 bg-[#D85E78] text-white hover:bg-[#C24B65] transition-colors"
-            >
-              BOOK COMATOZZE
-            </Link>
+            <div className="flex flex-wrap items-center gap-4">
+              <a
+                href="https://fansly.com/comatozze"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-[10px] tracking-[0.25em] font-sans font-semibold uppercase px-8 py-3.5 bg-[#D85E78] text-white hover:bg-[#C24B65] transition-colors shadow-sm"
+              >
+                JOIN ON FANSLY
+              </a>
+              <a
+                href="https://t.me/comatozze"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-[10px] tracking-[0.25em] font-sans font-semibold uppercase px-6 py-3.5 border border-[#1A1718] text-[#1A1718] hover:bg-[#1A1718] hover:text-white transition-colors"
+              >
+                TELEGRAM CHANNEL
+              </a>
+            </div>
           </div>
 
           {/* Right Model Photo */}

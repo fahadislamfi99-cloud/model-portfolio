@@ -69,12 +69,14 @@ export function Navbar() {
 
           {/* Desktop Button */}
           <div className="hidden lg:block">
-            <Link
-              href="/contact"
+            <a
+              href="https://fansly.com/comatozze"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-block text-[10px] tracking-[0.25em] font-sans font-semibold uppercase px-6 py-2.5 bg-[#D85E78] text-white hover:bg-[#C24B65] transition-colors shadow-sm"
             >
-              BOOK COMATOZZE
-            </Link>
+              VISIT FANSLY
+            </a>
           </div>
 
           {/* Mobile Menu Trigger */}
@@ -117,13 +119,15 @@ export function Navbar() {
         </div>
 
         <div className="pt-6 border-t border-[#E8DFDC]">
-          <Link
-            href="/contact"
+          <a
+            href="https://fansly.com/comatozze"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => setMobileOpen(false)}
             className="block w-full text-center py-3.5 bg-[#D85E78] text-white text-xs tracking-[0.2em] font-sans uppercase font-medium"
           >
-            BOOK COMATOZZE
-          </Link>
+            VISIT FANSLY
+          </a>
         </div>
       </div>
     </>

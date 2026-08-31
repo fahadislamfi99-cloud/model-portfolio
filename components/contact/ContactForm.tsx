@@ -36,10 +36,10 @@ export function ContactForm() {
         <div className="py-12 text-center space-y-4">
           <CheckCircle2 className="w-12 h-12 text-[#C98A90] mx-auto" />
           <h3 className="font-editorial-serif text-3xl sm:text-4xl text-[#191617]">
-            Inquiry Received
+            Message Received
           </h3>
           <p className="font-sans text-sm text-[#7A7273] max-w-md mx-auto leading-relaxed">
-            Thank you for reaching out. Management and representation will review your booking request and respond within 24–48 hours.
+            Thank you for reaching out. Your message has been received and will be reviewed shortly.
           </p>
           <button
             onClick={() => {

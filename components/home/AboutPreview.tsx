@@ -16,7 +16,7 @@ export function AboutPreview() {
               More Than <br />A Moment
             </h2>
             <p className="font-sans text-xs sm:text-sm text-[#5C5556] leading-relaxed mb-6">
-              I&apos;m Comatozze, a professional model with a passion for fashion, art and storytelling. Every frame is a new chapter, every project a new experience.
+              Also known as Uma North. Self-produced independent creator, model, and performer originally from Podolsk, Russia. Known for cozy, candid productions, authentic chemistry, and a distinctive creative spirit (&ldquo;Cute face, wild mind&rdquo;).
             </p>
             <Link
               href="/about"
