@@ -23,11 +23,15 @@ export async function generateMetadata({
   if (!project) return { title: "Project Not Found" };
 
   return {
-    title: `${project.title} — Comatozze Model Work`,
+    title: `${project.title} — Comatozze Model Campaign`,
     description: project.description,
+    alternates: {
+      canonical: `https://comatozze.com/work/${project.slug}`,
+    },
     openGraph: {
-      title: `${project.title} | Comatozze`,
+      title: `${project.title} — Comatozze`,
       description: project.description,
+      url: `https://comatozze.com/work/${project.slug}`,
       images: [project.image],
     },
   };
@@ -45,8 +49,30 @@ export default async function ProjectDetailPage({
 
   const related = workProjects.filter((p) => p.slug !== slug).slice(0, 2);
 
+  const projectJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: project.title,
+    description: project.description,
+    image: `https://comatozze.com${project.image}`,
+    author: {
+      "@type": "Person",
+      name: "Comatozze",
+      url: "https://comatozze.com",
+    },
+    creator: {
+      "@type": "Person",
+      name: project.credits.photography,
+    },
+    dateCreated: project.year,
+  };
+
   return (
     <div className="pt-32 pb-24 md:pb-36 bg-[#FAF8F5]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectJsonLd) }}
+      />
       <div className="max-w-[1560px] mx-auto px-6 sm:px-10 md:px-14">
         {/* Back Link */}
         <Link

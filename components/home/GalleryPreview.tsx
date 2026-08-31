@@ -19,8 +19,11 @@ export function GalleryPreview() {
         <div className="flex items-end justify-between mb-8">
           <div>
             <span className="text-[10px] tracking-[0.3em] text-[#D85E78] font-sans font-semibold uppercase block mb-1">
-              GALLERY PREVIEW
+              CURATED STILLS
             </span>
+            <h2 className="font-editorial-serif text-3xl sm:text-4xl text-[#1A1718] font-normal">
+              Photo Gallery
+            </h2>
           </div>
           <Link
             href="/gallery"

@@ -66,7 +66,7 @@ export default function GalleryPage() {
               CURATED ARCHIVE
             </span>
             <h1 className="font-editorial-serif text-5xl sm:text-7xl lg:text-8xl text-[#191617] font-light mt-3 tracking-wide">
-              Visual <span className="italic">Gallery</span>
+              Comatozze <span className="italic">Gallery</span>
             </h1>
           </div>
 

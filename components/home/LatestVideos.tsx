@@ -69,7 +69,7 @@ export function LatestVideos() {
               SHORT VIDEOS & REELS
             </span>
             <h2 className="font-editorial-serif text-3xl sm:text-4xl text-[#1A1718] font-normal">
-              Behind The Lens
+              Latest Videos
             </h2>
           </div>
           <Link

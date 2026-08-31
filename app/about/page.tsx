@@ -7,17 +7,47 @@ import { careerTimeline } from "@/data/career";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 
 export const metadata: Metadata = {
-  title: "About Comatozze — Fashion & Editorial Model",
+  title: "About Comatozze — Biography, Profile & Career",
   description:
-    "Explore the biography, profile specifications, career milestones, and artistic philosophy of fashion model Comatozze.",
+    "Explore the biography, profile specifications, career milestones, and artistic philosophy of fashion model Comatozze (also known as Uma North).",
   alternates: {
     canonical: "https://comatozze.com/about",
+  },
+  openGraph: {
+    title: "About Comatozze — Biography, Profile & Career",
+    description:
+      "Explore the biography, profile specifications, career milestones, and artistic philosophy of fashion model Comatozze.",
+    url: "https://comatozze.com/about",
+    images: ["/images/model/image-6-lace-bodysuit.jpg"],
   },
 };
 
 export default function AboutPage() {
+  const aboutBreadcrumbsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://comatozze.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "About Comatozze",
+        item: "https://comatozze.com/about",
+      },
+    ],
+  };
+
   return (
     <div className="pt-32 pb-24 md:pb-36 bg-[#FAF8F5]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutBreadcrumbsJsonLd) }}
+      />
       <div className="max-w-[1560px] mx-auto px-6 sm:px-10 md:px-14">
         {/* Page Header */}
         <div className="border-b border-[#E8DFDC] pb-12 mb-16">
@@ -25,7 +55,7 @@ export default function AboutPage() {
             BIOGRAPHY & PROFILE
           </span>
           <h1 className="font-editorial-serif text-5xl sm:text-7xl lg:text-8xl text-[#191617] font-light mt-3 tracking-wide">
-            About <span className="italic">Comatozze</span>
+            About Comatozze
           </h1>
         </div>
 

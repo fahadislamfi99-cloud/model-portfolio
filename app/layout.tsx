@@ -31,49 +31,65 @@ const greatVibes = Great_Vibes({
 export const metadata: Metadata = {
   metadataBase: new URL("https://comatozze.com"),
   title: {
-    default: "Comatozze — Professional Fashion & Editorial Model",
+    default: "Comatozze — Official Model Portfolio, Photos & Videos",
     template: "%s | Comatozze",
   },
   description:
-    "Official editorial portfolio of Comatozze. International fashion model specializing in luxury campaigns, haute couture runway, and cinematic fashion films.",
+    "Explore Comatozze's official model portfolio, latest videos, editorial photos, career highlights, modeling work and verified social profiles.",
   keywords: [
     "Comatozze",
     "Comatozze model",
+    "Comatozze profile",
+    "Comatozze biography",
     "Comatozze portfolio",
-    "Comatozze fashion model",
-    "Comatozze editorial model",
-    "luxury fashion model",
-    "runway model",
+    "Comatozze latest video",
+    "Comatozze new video",
+    "Comatozze latest photos",
+    "Comatozze Instagram",
+    "Comatozze videos",
+    "Comatozze gallery",
+    "Uma North",
+    "Uma North model",
   ],
-  authors: [{ name: "Comatozze" }],
+  authors: [{ name: "Comatozze", url: "https://comatozze.com" }],
   creator: "Comatozze",
+  alternates: {
+    canonical: "https://comatozze.com",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://comatozze.com",
-    title: "Comatozze — Professional Fashion & Editorial Model",
+    title: "Comatozze — Official Model Portfolio, Photos & Videos",
     description:
-      "Official portfolio of Comatozze. International fashion model specializing in luxury campaigns, haute couture runway, and cinematic fashion films.",
-    siteName: "Comatozze Model Portfolio",
+      "Explore Comatozze's official model portfolio, latest videos, editorial photos, career highlights, modeling work and verified social profiles.",
+    siteName: "Comatozze",
     images: [
       {
-        url: "/images/hero/comatozze-hero.jpg",
+        url: "/images/model/comatozze-hero-poolside.jpg",
         width: 1200,
         height: 1600,
-        alt: "Comatozze high-fashion model portfolio",
+        alt: "Comatozze official model portrait",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Comatozze — Professional Fashion & Editorial Model",
+    title: "Comatozze — Official Model Portfolio, Photos & Videos",
     description:
-      "Official portfolio of Comatozze. International fashion model specializing in luxury campaigns, haute couture runway, and cinematic fashion films.",
-    images: ["/images/hero/comatozze-hero.jpg"],
+      "Explore Comatozze's official model portfolio, latest videos, editorial photos, career highlights, modeling work and verified social profiles.",
+    images: ["/images/model/comatozze-hero-poolside.jpg"],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -82,15 +98,30 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const jsonLd = {
+  const personJsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Comatozze",
-    jobTitle: "Fashion & Editorial Model",
-    image: "https://comatozze.com/images/hero/comatozze-hero.jpg",
-    description: modelData.statement,
+    alternateName: ["Uma North", "UmaNorth"],
+    jobTitle: "Model & Content Creator",
+    image: "https://comatozze.com/images/model/comatozze-hero-poolside.jpg",
+    description:
+      "Comatozze is an independent model and content creator known for editorial fashion, atmospheric films, and natural feminine confidence.",
     url: "https://comatozze.com",
-    sameAs: [modelData.contact.instagram],
+    sameAs: [
+      "https://fansly.com/comatozze",
+      "https://instagram.com/umaanorth",
+      "https://t.me/comatozze_new",
+    ],
+  };
+
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Comatozze",
+    url: "https://comatozze.com",
+    description:
+      "Official website and model portfolio of Comatozze, featuring editorial photos, latest videos, career biography, and verified platform hubs.",
   };
 
   return (
@@ -101,7 +132,11 @@ export default function RootLayout({
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
       </head>
       <body className="min-h-screen bg-[#FAF8F5] text-[#191617] font-sans flex flex-col">

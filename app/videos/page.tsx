@@ -18,10 +18,10 @@ export default function VideosPage() {
             CINEMATIC ARCHIVE & MOTION
           </span>
           <h1 className="font-editorial-serif text-5xl sm:text-7xl lg:text-8xl text-[#191617] font-light mt-3 tracking-wide">
-            Fashion <span className="italic">Films</span>
+            Comatozze <span className="italic">Videos</span>
           </h1>
           <p className="font-sans text-sm sm:text-base text-[#7A7273] mt-4 max-w-xl">
-            Runway documentation, campaign teasers, motion editorial studies, and behind-the-scenes perspectives.
+            Explore Comatozze&apos;s latest publicly available modeling films, campaign motion studies, widescreen features, and behind-the-scenes perspectives.
           </p>
         </div>
 

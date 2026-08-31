@@ -13,7 +13,7 @@ export function AboutPreview() {
               ABOUT HER
             </span>
             <h2 className="font-editorial-serif text-3xl sm:text-4xl text-[#1A1718] font-normal leading-tight mb-4">
-              More Than <br />A Moment
+              About Comatozze
             </h2>
             <p className="font-sans text-xs sm:text-sm text-[#5C5556] leading-relaxed mb-6">
               Also known as Uma North. Self-produced independent creator, model, and performer originally from Podolsk, Russia. Known for cozy, candid productions, authentic chemistry, and a distinctive creative spirit (&ldquo;Cute face, wild mind&rdquo;).

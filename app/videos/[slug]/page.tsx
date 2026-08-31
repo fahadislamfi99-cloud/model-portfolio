@@ -22,11 +22,15 @@ export async function generateMetadata({
   if (!video) return { title: "Video Not Found" };
 
   return {
-    title: `${video.title} — Comatozze Fashion Film`,
+    title: `${video.title} — Comatozze Official Fashion Film`,
     description: video.description,
+    alternates: {
+      canonical: `https://comatozze.com/videos/${video.slug}`,
+    },
     openGraph: {
-      title: `${video.title} | Comatozze`,
+      title: `${video.title} — Comatozze Official Video`,
       description: video.description,
+      url: `https://comatozze.com/videos/${video.slug}`,
       images: [video.thumbnail],
     },
   };
@@ -42,8 +46,29 @@ export default async function VideoDetailPage({ params }: VideoDetailProps) {
 
   const relatedVideos = videosData.filter((v) => v.slug !== slug).slice(0, 2);
 
+  const videoJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: video.title,
+    description: video.description,
+    thumbnailUrl: [`https://comatozze.com${video.thumbnail}`],
+    uploadDate: `${video.year}-01-01T00:00:00Z`,
+    contentUrl: `https://comatozze.com${video.videoUrl}`,
+    embedUrl: `https://comatozze.com/videos/${video.slug}`,
+    actor: {
+      "@type": "Person",
+      name: "Comatozze",
+      alternateName: "Uma North",
+      url: "https://comatozze.com",
+    },
+  };
+
   return (
     <div className="pt-32 pb-24 md:pb-36 bg-[#FAF8F5]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }}
+      />
       <div className="max-w-[1560px] mx-auto px-6 sm:px-10 md:px-14">
         {/* Back Link */}
         <Link

@@ -25,17 +25,22 @@ export function Hero() {
 
             {/* Giant Brand Heading */}
             <h1 className="font-editorial-serif text-5xl sm:text-7xl xl:text-8xl tracking-[0.14em] font-light text-[#1A1718] leading-[0.92]">
-              COMATOZZE
+              Comatozze
             </h1>
 
+            {/* Contextual Entity Lead */}
+            <p className="text-[11px] tracking-[0.2em] font-sans uppercase text-[#7A7273] mt-2 mb-1">
+              Professional Model & Independent Creator
+            </p>
+
             {/* Cursive Statement */}
-            <p className="font-cursive text-4xl sm:text-5xl lg:text-6xl text-[#D85E78] my-3 transform -rotate-1 font-normal tracking-wide">
+            <p className="font-cursive text-4xl sm:text-5xl lg:text-6xl text-[#D85E78] my-2 transform -rotate-1 font-normal tracking-wide">
               {modelData.tagline}
             </p>
 
             {/* Description */}
             <p className="font-sans text-xs sm:text-sm text-[#5C5556] leading-relaxed max-w-sm my-4">
-              {modelData.statement}
+              Comatozze is a professional model featured in fashion, editorial, beauty, and commercial work — blending authentic poise with natural confidence.
             </p>
 
             {/* Action Buttons */}
@@ -64,7 +69,7 @@ export function Hero() {
             <div className="relative w-full max-w-[500px] aspect-[3/4] sm:aspect-[4/5] overflow-hidden shadow-2xl rounded-sm border border-[#EFE8E6] bg-[#F2EAE8]">
               <Image
                 src="/images/model/comatozze-hero-poolside.jpg"
-                alt="Hot Comatozze model portrait"
+                alt="Comatozze official fashion editorial portrait"
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"

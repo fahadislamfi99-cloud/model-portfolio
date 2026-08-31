@@ -32,9 +32,12 @@ export function CareerHighlights() {
   return (
     <section className="py-20 bg-[#FAF8F5] border-t border-[#EFE8E6]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-10">
-        <span className="text-[10px] tracking-[0.3em] text-[#D85E78] font-sans font-semibold uppercase block mb-12">
-          CAREER HIGHLIGHTS
+        <span className="text-[10px] tracking-[0.3em] text-[#D85E78] font-sans font-semibold uppercase block mb-1">
+          MILESTONES & NUMBERS
         </span>
+        <h2 className="font-editorial-serif text-3xl sm:text-4xl text-[#1A1718] font-normal mb-12">
+          Career Highlights
+        </h2>
 
         {/* 5 Column Stats Row with Thin Pink Connecting Timeline */}
         <div className="relative">
