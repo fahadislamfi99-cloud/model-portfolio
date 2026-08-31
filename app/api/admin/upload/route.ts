@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import { existsSync } from "fs";
-import path from "path";
+import cloudinary from "@/lib/cloudinary";
+import { UploadApiResponse } from "cloudinary";
+
 
 export async function POST(request: Request) {
   try {
@@ -16,32 +16,39 @@ export async function POST(request: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Sanitize filename
-    const ext = path.extname(file.name).toLowerCase();
-    const baseName = path
-      .basename(file.name, ext)
-      .replace(/[^a-zA-Z0-9_-]/g, "_")
-      .toLowerCase();
-    const uniqueFileName = `${Date.now()}_${baseName}${ext}`;
+    // Determine resource type for Cloudinary: 'video' or 'image'
+    const isVideo = type === "videos" || file.type.startsWith("video/");
+    const resource_type = isVideo ? "video" : "image";
+    const folder = `comatozze/${type}`;
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads", type);
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
-    }
+    // Upload to Cloudinary via stream
+    const uploadResult = await new Promise<UploadApiResponse>((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder,
+          resource_type,
+          use_filename: true,
+          unique_filename: true,
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result as UploadApiResponse);
+        }
+      );
 
-    const filePath = path.join(uploadDir, uniqueFileName);
-    await writeFile(filePath, buffer);
-
-    const publicUrl = `/uploads/${type}/${uniqueFileName}`;
+      uploadStream.end(buffer);
+    });
 
     return NextResponse.json({
       success: true,
-      url: publicUrl,
-      fileName: uniqueFileName,
-      size: file.size,
+      url: uploadResult.secure_url,
+      publicId: uploadResult.public_id,
+      format: uploadResult.format,
+      duration: uploadResult.duration,
+      size: uploadResult.bytes,
     });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Upload error";
+    const message = err instanceof Error ? err.message : "Cloudinary upload error";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
