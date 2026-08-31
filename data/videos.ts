@@ -13,6 +13,32 @@ export interface VideoItem {
 
 export const videosData: VideoItem[] = [
   {
+    slug: "comatozze-signature-feature-01",
+    title: "Comatozze Signature Feature 01",
+    category: "WIDESCREEN FEATURE",
+    year: "2024",
+    duration: "15:42",
+    thumbnail: "/images/model/comatozze-pool-sunset-1.png",
+    videoUrl: "/long_video/video-1.mp4",
+    client: "[Self-Produced / Comatozze]",
+    director: "[Uma North & Partner]",
+    description:
+      "Cinematic 16:9 widescreen showcase highlighting fluid motion, mood, and natural light."
+  },
+  {
+    slug: "comatozze-signature-feature-02",
+    title: "Comatozze Signature Feature 02",
+    category: "WIDESCREEN FEATURE",
+    year: "2024",
+    duration: "21:18",
+    thumbnail: "/images/model/comatozze-pool-sunset-2.png",
+    videoUrl: "/long_video/video-2.mp4",
+    client: "[Self-Produced / Comatozze]",
+    director: "[Uma North & Partner]",
+    description:
+      "Intimate long-form production exploring artistic framing, authentic presence, and relaxed poise."
+  },
+  {
     slug: "editorial-motion",
     title: "Editorial Motion & Poise",
     category: "FASHION REEL",

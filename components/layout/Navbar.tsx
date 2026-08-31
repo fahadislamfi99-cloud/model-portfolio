@@ -11,7 +11,6 @@ const navLinks = [
   { href: "/work", label: "WORK" },
   { href: "/videos", label: "VIDEOS" },
   { href: "/gallery", label: "GALLERY" },
-  { href: "/contact", label: "CONTACT" },
 ];
 
 export function Navbar() {

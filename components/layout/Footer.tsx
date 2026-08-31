@@ -31,7 +31,6 @@ export function Footer() {
               <Link href="/work" className="hover:text-[#D85E78]">Work</Link>
               <Link href="/videos" className="hover:text-[#D85E78]">Videos</Link>
               <Link href="/gallery" className="hover:text-[#D85E78]">Gallery</Link>
-              <Link href="/contact" className="hover:text-[#D85E78]">Contact</Link>
             </div>
           </div>
 
@@ -41,8 +40,7 @@ export function Footer() {
               INFO
             </span>
             <div className="flex flex-col space-y-1.5 text-xs text-[#7A7273] font-sans">
-              <Link href="/contact" className="hover:text-[#D85E78]">Official Hubs</Link>
-              <Link href="/contact" className="hover:text-[#D85E78]">Press & Media</Link>
+              <a href="https://fansly.com/comatozze" target="_blank" rel="noopener noreferrer" className="hover:text-[#D85E78]">Official Hub</a>
               <span className="cursor-pointer hover:text-[#D85E78]">Privacy Policy</span>
               <span className="cursor-pointer hover:text-[#D85E78]">Terms & Conditions</span>
             </div>
@@ -77,12 +75,12 @@ export function Footer() {
                   Instagram: @umaanorth
                 </a>
                 <a
-                  href="https://t.me/comatozze"
+                  href="https://t.me/comatozze_new"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[#D85E78]"
                 >
-                  Telegram: @comatozze
+                  Telegram: @comatozze_new
                 </a>
               </div>
             </div>

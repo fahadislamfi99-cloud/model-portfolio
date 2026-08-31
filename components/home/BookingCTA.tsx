@@ -25,7 +25,7 @@ export function BookingCTA() {
                 JOIN ON FANSLY
               </a>
               <a
-                href="https://t.me/comatozze"
+                href="https://t.me/comatozze_new"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block text-[10px] tracking-[0.25em] font-sans font-semibold uppercase px-6 py-3.5 border border-[#1A1718] text-[#1A1718] hover:bg-[#1A1718] hover:text-white transition-colors"

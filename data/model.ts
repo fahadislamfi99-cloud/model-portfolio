@@ -96,7 +96,7 @@ export const modelData: ModelProfile = {
     fanslyHandle: "@comatozze",
     instagram: "https://instagram.com/umaanorth",
     instagramHandle: "@umaanorth",
-    telegram: "https://t.me/comatozze",
-    telegramHandle: "@comatozze"
+    telegram: "https://t.me/comatozze_new",
+    telegramHandle: "@comatozze_new"
   }
 };
