@@ -1,4 +1,5 @@
 import { Crown, Camera, Globe, Star, BookOpen } from "lucide-react";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
 
 const stats = [
   {
@@ -32,12 +33,14 @@ export function CareerHighlights() {
   return (
     <section className="py-20 bg-[#FAF8F5] border-t border-[#EFE8E6]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-10">
-        <span className="text-[10px] tracking-[0.3em] text-[#D85E78] font-sans font-semibold uppercase block mb-1">
-          MILESTONES & NUMBERS
-        </span>
-        <h2 className="font-editorial-serif text-3xl sm:text-4xl text-[#1A1718] font-normal mb-12">
-          Career Highlights
-        </h2>
+        <ScrollReveal>
+          <span className="text-[10px] tracking-[0.3em] text-[#D85E78] font-sans font-semibold uppercase block mb-1">
+            MILESTONES & NUMBERS
+          </span>
+          <h2 className="font-editorial-serif text-3xl sm:text-4xl text-[#1A1718] font-normal mb-12">
+            Career Highlights
+          </h2>
+        </ScrollReveal>
 
         {/* 5 Column Stats Row with Thin Pink Connecting Timeline */}
         <div className="relative">
@@ -48,17 +51,19 @@ export function CareerHighlights() {
             {stats.map((stat, idx) => {
               const Icon = stat.icon;
               return (
-                <div key={idx} className="flex flex-col items-start space-y-2">
-                  <div className="w-8 h-8 rounded-full bg-[#FAF8F5] flex items-center justify-center text-[#D85E78] mb-1">
-                    <Icon className="w-5 h-5 stroke-[1.4]" />
+                <ScrollReveal key={idx} delay={idx * 100}>
+                  <div className="flex flex-col items-start space-y-2">
+                    <div className="w-8 h-8 rounded-full bg-[#FAF8F5] flex items-center justify-center text-[#D85E78] mb-1">
+                      <Icon className="w-5 h-5 stroke-[1.4]" />
+                    </div>
+                    <span className="font-editorial-serif text-3xl sm:text-4xl text-[#1A1718] font-normal">
+                      {stat.value}
+                    </span>
+                    <p className="text-[11px] font-sans text-[#7A7273] leading-snug">
+                      {stat.label}
+                    </p>
                   </div>
-                  <span className="font-editorial-serif text-3xl sm:text-4xl text-[#1A1718] font-normal">
-                    {stat.value}
-                  </span>
-                  <p className="text-[11px] font-sans text-[#7A7273] leading-snug">
-                    {stat.label}
-                  </p>
-                </div>
+                </ScrollReveal>
               );
             })}
           </div>

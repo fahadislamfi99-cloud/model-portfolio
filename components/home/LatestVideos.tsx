@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Play, ArrowRight, X } from "lucide-react";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
 
 interface ReelItem {
   _id?: string;
@@ -63,63 +64,67 @@ export function LatestVideos() {
     <section className="py-20 bg-[#FAF8F5] border-t border-[#EFE8E6]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-10">
         {/* Header */}
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <span className="text-[10px] tracking-[0.3em] text-[#D85E78] font-sans font-semibold uppercase block mb-1">
-              SHORT VIDEOS & REELS
-            </span>
-            <h2 className="font-editorial-serif text-3xl sm:text-4xl text-[#1A1718] font-normal">
-              Latest Videos
-            </h2>
+        <ScrollReveal>
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <span className="text-[10px] tracking-[0.3em] text-[#D85E78] font-sans font-semibold uppercase block mb-1">
+                SHORT VIDEOS & REELS
+              </span>
+              <h2 className="font-editorial-serif text-3xl sm:text-4xl text-[#1A1718] font-normal">
+                Latest Videos
+              </h2>
+            </div>
+            <Link
+              href="/videos"
+              className="inline-flex items-center space-x-1 text-[10px] tracking-[0.2em] font-sans font-semibold uppercase text-[#D85E78] hover:text-[#C24B65]"
+            >
+              <span>VIEW ALL REELS</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
-          <Link
-            href="/videos"
-            className="inline-flex items-center space-x-1 text-[10px] tracking-[0.2em] font-sans font-semibold uppercase text-[#D85E78] hover:text-[#C24B65]"
-          >
-            <span>VIEW ALL REELS</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
+        </ScrollReveal>
 
         {/* 3-Column Reels Grid (9:16 Portrait Reel aspect ratio) */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {reels.map((vid, idx) => (
-            <div key={vid._id || idx} className="group block">
-              <div
-                onClick={() => setActiveItem(vid)}
-                className="relative aspect-[9/16] w-full overflow-hidden bg-[#1A1718] rounded-sm mb-3 cursor-pointer shadow-sm"
-              >
-                <Image
-                  src={vid.thumbnail}
-                  alt={vid.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
-                />
+            <ScrollReveal key={vid._id || idx} delay={idx * 120}>
+              <div className="group block">
+                <div
+                  onClick={() => setActiveItem(vid)}
+                  className="relative aspect-[9/16] w-full overflow-hidden bg-[#1A1718] rounded-sm mb-3 cursor-pointer shadow-sm"
+                >
+                  <Image
+                    src={vid.thumbnail}
+                    alt={vid.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                  />
 
-                {/* Duration Badge Top Right */}
-                <div className="absolute top-3 right-3 px-2 py-0.5 bg-black/60 backdrop-blur-xs text-[10px] font-sans text-white">
-                  {vid.duration}
-                </div>
+                  {/* Duration Badge Top Right */}
+                  <div className="absolute top-3 right-3 px-2 py-0.5 bg-black/60 backdrop-blur-xs text-[10px] font-sans text-white">
+                    {vid.duration}
+                  </div>
 
-                {/* Play Button Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full border border-white/90 flex items-center justify-center bg-black/40 backdrop-blur-xs transform group-hover:scale-110 transition-transform">
-                    <Play className="w-4 h-4 text-white ml-0.5" fill="white" />
+                  {/* Play Button Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full border border-white/90 flex items-center justify-center bg-black/40 backdrop-blur-xs transform group-hover:scale-110 transition-transform">
+                      <Play className="w-4 h-4 text-white ml-0.5" fill="white" />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <h3
-                onClick={() => setActiveItem(vid)}
-                className="font-editorial-serif text-xl text-[#1A1718] group-hover:text-[#D85E78] transition-colors cursor-pointer"
-              >
-                {vid.title}
-              </h3>
-              <p className="text-[9px] tracking-[0.2em] font-sans uppercase text-[#7A7273] mt-1">
-                {vid.category}
-              </p>
-            </div>
+                <h3
+                  onClick={() => setActiveItem(vid)}
+                  className="font-editorial-serif text-xl text-[#1A1718] group-hover:text-[#D85E78] transition-colors cursor-pointer"
+                >
+                  {vid.title}
+                </h3>
+                <p className="text-[9px] tracking-[0.2em] font-sans uppercase text-[#7A7273] mt-1">
+                  {vid.category}
+                </p>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

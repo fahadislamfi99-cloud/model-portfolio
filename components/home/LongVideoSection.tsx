@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Play, X, ArrowRight } from "lucide-react";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
 
 interface LongVideo {
   _id?: string;
@@ -61,68 +62,72 @@ export function LongVideoSection() {
     <section className="py-20 bg-[#FAF8F5] border-t border-[#EFE8E6]">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-10">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10">
-          <div>
-            <span className="text-[10px] tracking-[0.3em] text-[#D85E78] font-sans font-semibold uppercase block mb-1">
-              CINEMATIC WIDESCREEN
-            </span>
-            <h2 className="font-editorial-serif text-3xl sm:text-4xl text-[#1A1718] font-normal">
-              Comatozze Latest Video
-            </h2>
+        <ScrollReveal>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10">
+            <div>
+              <span className="text-[10px] tracking-[0.3em] text-[#D85E78] font-sans font-semibold uppercase block mb-1">
+                CINEMATIC WIDESCREEN
+              </span>
+              <h2 className="font-editorial-serif text-3xl sm:text-4xl text-[#1A1718] font-normal">
+                Comatozze Latest Video
+              </h2>
+            </div>
+            <Link
+              href="/videos"
+              className="inline-flex items-center space-x-1 text-[10px] tracking-[0.2em] font-sans font-semibold uppercase text-[#D85E78] hover:text-[#C24B65] mt-4 sm:mt-0"
+            >
+              <span>BROWSE ALL VIDEOS</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
-          <Link
-            href="/videos"
-            className="inline-flex items-center space-x-1 text-[10px] tracking-[0.2em] font-sans font-semibold uppercase text-[#D85E78] hover:text-[#C24B65] mt-4 sm:mt-0"
-          >
-            <span>BROWSE ALL VIDEOS</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
+        </ScrollReveal>
 
         {/* 16:9 Widescreen Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {videos.map((item, idx) => (
-            <div key={item._id || item.id || idx} className="group block">
-              <div
-                onClick={() => setActiveVideo(item)}
-                className="relative aspect-video w-full overflow-hidden bg-[#1A1718] rounded-sm mb-4 cursor-pointer shadow-md border border-[#EFE8E6]"
-              >
-                <Image
-                  src={item.thumbnail}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
-                />
+            <ScrollReveal key={item._id || item.id || idx} delay={idx * 150}>
+              <div className="group block">
+                <div
+                  onClick={() => setActiveVideo(item)}
+                  className="relative aspect-video w-full overflow-hidden bg-[#1A1718] rounded-sm mb-4 cursor-pointer shadow-md border border-[#EFE8E6]"
+                >
+                  <Image
+                    src={item.thumbnail}
+                    alt={item.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                  />
 
-                {/* Duration Badge */}
-                <div className="absolute top-3 right-3 px-2 py-0.5 bg-black/70 backdrop-blur-xs text-[10px] tracking-wider font-sans text-white">
-                  {item.duration}
-                </div>
+                  {/* Duration Badge */}
+                  <div className="absolute top-3 right-3 px-2 py-0.5 bg-black/70 backdrop-blur-xs text-[10px] tracking-wider font-sans text-white">
+                    {item.duration}
+                  </div>
 
-                {/* Play Button Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-14 h-14 rounded-full border border-white/90 flex items-center justify-center bg-black/40 backdrop-blur-xs transform group-hover:scale-110 transition-transform duration-300">
-                    <Play className="w-5 h-5 text-white ml-0.5" fill="white" />
+                  {/* Play Button Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-full border border-white/90 flex items-center justify-center bg-black/40 backdrop-blur-xs transform group-hover:scale-110 transition-transform duration-300">
+                      <Play className="w-5 h-5 text-white ml-0.5" fill="white" />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="space-y-1">
-                <span className="text-[9px] tracking-[0.25em] font-sans uppercase text-[#D85E78] font-semibold block">
-                  {item.category}
-                </span>
-                <h3
-                  onClick={() => setActiveVideo(item)}
-                  className="font-editorial-serif text-2xl text-[#1A1718] group-hover:text-[#D85E78] transition-colors cursor-pointer"
-                >
-                  {item.title}
-                </h3>
-                <p className="text-xs text-[#7A7273] font-sans leading-relaxed">
-                  {item.description}
-                </p>
+                <div className="space-y-1">
+                  <span className="text-[9px] tracking-[0.25em] font-sans uppercase text-[#D85E78] font-semibold block">
+                    {item.category}
+                  </span>
+                  <h3
+                    onClick={() => setActiveVideo(item)}
+                    className="font-editorial-serif text-2xl text-[#1A1718] group-hover:text-[#D85E78] transition-colors cursor-pointer"
+                  >
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-[#7A7273] font-sans leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
