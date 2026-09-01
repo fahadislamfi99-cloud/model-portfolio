@@ -222,12 +222,12 @@ export default function VideosPage() {
 
                       <div className="flex flex-col space-y-2 flex-1 justify-between">
                         <div>
-                          <Link href={`/videos/${video.slug}`}>
-                            <h3 className="font-editorial-serif text-2xl text-[#191617] group-hover:text-[#D85E78] transition-colors leading-snug">
+                          <Link href={`/videos/${video.slug}`} className="block">
+                            <h3 className="font-editorial-serif text-2xl text-[#191617] group-hover:text-[#D85E78] transition-colors leading-snug line-clamp-2 min-h-[3.75rem]">
                               {video.title}
                             </h3>
                           </Link>
-                          <p className="text-xs text-[#7A7273] font-sans leading-relaxed line-clamp-2 mt-1">
+                          <p className="text-xs text-[#7A7273] font-sans leading-relaxed line-clamp-2 mt-1 min-h-[2.25rem]">
                             {video.description}
                           </p>
                         </div>
@@ -314,12 +314,12 @@ export default function VideosPage() {
 
                       <div className="flex flex-col space-y-1.5 flex-1 justify-between">
                         <div>
-                          <Link href={`/videos/${video.slug}`}>
-                            <h3 className="font-editorial-serif text-xl text-[#191617] group-hover:text-[#D85E78] transition-colors leading-snug">
+                          <Link href={`/videos/${video.slug}`} className="block">
+                            <h3 className="font-editorial-serif text-xl text-[#191617] group-hover:text-[#D85E78] transition-colors leading-snug line-clamp-2 min-h-[3.25rem]">
                               {video.title}
                             </h3>
                           </Link>
-                          <p className="text-xs text-[#7A7273] font-sans line-clamp-2 mt-1">
+                          <p className="text-xs text-[#7A7273] font-sans line-clamp-2 mt-1 min-h-[2rem]">
                             {video.description}
                           </p>
                         </div>

@@ -32,6 +32,10 @@
     background-color: #EED7DA;
     color: #191617;
   }
+
+  a, button, [role="button"], input[type="button"], input[type="submit"], input[type="reset"], select, label[for] {
+    cursor: pointer;
+  }
 }
 
 /* Editorial typography classes */

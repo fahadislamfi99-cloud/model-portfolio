@@ -178,12 +178,12 @@ export function LongVideoSection() {
 
                   <div className="flex-1 flex flex-col justify-between space-y-3">
                     <div>
-                      <Link href={`/videos/${item.slug}`}>
-                        <h3 className="font-editorial-serif text-2xl text-[#1A1718] group-hover:text-[#D85E78] transition-colors leading-snug">
+                      <Link href={`/videos/${item.slug}`} className="block">
+                        <h3 className="font-editorial-serif text-2xl text-[#1A1718] group-hover:text-[#D85E78] transition-colors leading-snug line-clamp-2 min-h-[3.75rem]">
                           {item.title}
                         </h3>
                       </Link>
-                      <p className="text-xs text-[#7A7273] font-sans leading-relaxed line-clamp-2 mt-1.5">
+                      <p className="text-xs text-[#7A7273] font-sans leading-relaxed line-clamp-2 mt-1 min-h-[2.25rem]">
                         {item.description}
                       </p>
                     </div>

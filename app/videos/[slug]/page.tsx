@@ -312,11 +312,11 @@ export default async function VideoDetailPage({ params }: VideoDetailProps) {
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-baseline border-b border-[#E8DFDC] pb-2">
-                    <h4 className="font-editorial-serif text-xl text-[#191617] group-hover:text-[#D85E78] transition-colors leading-snug">
+                  <div className="flex justify-between items-start border-b border-[#E8DFDC] pb-2 min-h-[3.75rem]">
+                    <h4 className="font-editorial-serif text-xl text-[#191617] group-hover:text-[#D85E78] transition-colors leading-snug line-clamp-2 flex-1">
                       {rel.title}
                     </h4>
-                    <ArrowUpRight className="w-4 h-4 text-[#7A7273] group-hover:text-[#191617] shrink-0 ml-2" />
+                    <ArrowUpRight className="w-4 h-4 text-[#7A7273] group-hover:text-[#191617] shrink-0 ml-2 mt-1" />
                   </div>
                 </Link>
               ))}
