@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Eye, Film, Smartphone, Clock, Calendar, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Eye, Clock, Calendar, Sparkles } from "lucide-react";
 import { getAllVideos, getVideoBySlugOrId } from "@/lib/videos.server";
 import { LoveReactButton } from "@/components/videos/LoveReactButton";
 
@@ -162,11 +162,6 @@ export default async function VideoDetailPage({ params }: VideoDetailProps) {
         {/* Video Header & Metadata */}
         <div className="border-b border-[#E8DFDC] pb-8 mb-10">
           <div className="flex flex-wrap items-center gap-3 text-[10px] tracking-[0.3em] font-sans uppercase font-medium text-[#D85E78] mb-3">
-            <span className="flex items-center space-x-1 bg-[#FAF0F2] px-2.5 py-1 rounded-full">
-              {isReel ? <Smartphone className="w-3 h-3" /> : <Film className="w-3 h-3" />}
-              <span>{isReel ? "9:16 Vertical Reel" : "16:9 Cinematic Feature"}</span>
-            </span>
-            <span>·</span>
             <span className="flex items-center space-x-1">
               <Clock className="w-3 h-3 text-[#A09899]" />
               <span>{video.duration}</span>
@@ -192,10 +187,6 @@ export default async function VideoDetailPage({ params }: VideoDetailProps) {
               </div>
               <LoveReactButton videoId={video.id} initialLikes={video.likes} size="md" />
             </div>
-
-            <span className="text-xs font-sans text-[#7A7273] uppercase tracking-wider">
-              Category: <strong className="text-[#191617]">{video.category}</strong>
-            </span>
           </div>
         </div>
 
@@ -212,6 +203,7 @@ export default async function VideoDetailPage({ params }: VideoDetailProps) {
               src={video.videoUrl}
               poster={video.thumbnail}
               controls
+              autoPlay
               playsInline
               className="w-full h-full object-contain"
             >
@@ -267,7 +259,7 @@ export default async function VideoDetailPage({ params }: VideoDetailProps) {
               PRODUCTION CREDITS
             </h3>
             <p>STARRING: <span className="text-[#191617] font-medium">Comatozze (Uma North)</span></p>
-            <p>ASPECT: <span className="text-[#191617] font-medium">{isReel ? "9:16 Vertical Portrait" : "16:9 Cinematic Widescreen"}</span></p>
+            <p>FORMAT: <span className="text-[#191617] font-medium">{isReel ? "9:16 Vertical Portrait" : "16:9 Cinematic Widescreen"}</span></p>
             <p>RESOLUTION: <span className="text-[#191617] font-medium">4K Ultra HD</span></p>
             <p>LOCATION: <span className="text-[#191617] font-medium">Private Studio / Outdoor</span></p>
             <p>VERIFIED LINK: <a href="https://t.me/comatozze_new" target="_blank" rel="noopener noreferrer" className="text-[#229ED9] hover:underline">@comatozze_new</a></p>
@@ -319,14 +311,9 @@ export default async function VideoDetailPage({ params }: VideoDetailProps) {
                   </div>
 
                   <div className="flex justify-between items-baseline border-b border-[#E8DFDC] pb-2">
-                    <div>
-                      <span className="text-[9px] tracking-[0.25em] font-sans uppercase text-[#D85E78] block">
-                        {rel.category}
-                      </span>
-                      <h4 className="font-editorial-serif text-xl text-[#191617] group-hover:text-[#D85E78] transition-colors leading-snug">
-                        {rel.title}
-                      </h4>
-                    </div>
+                    <h4 className="font-editorial-serif text-xl text-[#191617] group-hover:text-[#D85E78] transition-colors leading-snug">
+                      {rel.title}
+                    </h4>
                     <ArrowUpRight className="w-4 h-4 text-[#7A7273] group-hover:text-[#191617] shrink-0 ml-2" />
                   </div>
                 </Link>

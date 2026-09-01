@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Play, ArrowRight, ArrowUpRight, Eye } from "lucide-react";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { LoveReactButton } from "@/components/videos/LoveReactButton";
-import { VideoPlayerModal } from "@/components/videos/VideoPlayerModal";
 import { UnifiedVideo, getBaselineStats, slugify } from "@/lib/videos";
 
 const fallbackReels: UnifiedVideo[] = [
@@ -61,8 +60,8 @@ const fallbackReels: UnifiedVideo[] = [
 ];
 
 export function LatestVideos() {
-  const [activeItem, setActiveItem] = useState<UnifiedVideo | null>(null);
   const [reels, setReels] = useState<UnifiedVideo[]>(fallbackReels);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetch("/api/admin/videos?format=reel")
@@ -73,7 +72,7 @@ export function LatestVideos() {
             (v: {
               _id: string;
               title: string;
-              category: string;
+              category?: string;
               duration: string;
               thumbnail: string;
               videoUrl: string;
@@ -89,7 +88,7 @@ export function LatestVideos() {
                 id: v._id,
                 slug: slugify(v.title || `reel-${v._id}`),
                 title: v.title,
-                category: v.category || "FASHION REEL",
+                category: "FASHION REEL",
                 year: "2026",
                 duration: v.duration || "00:30",
                 thumbnail: v.thumbnail || "/images/model/comatozze-saree-gold.jpg",
@@ -106,7 +105,8 @@ export function LatestVideos() {
           setReels(formatted);
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   const formatViews = (num: number) => {
@@ -142,89 +142,93 @@ export function LatestVideos() {
           </div>
         </ScrollReveal>
 
-        {/* 3-Column Vertical Reel Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {reels.map((vid, idx) => (
-            <ScrollReveal key={vid.id} direction="up" delay={idx * 120}>
-              <div className="group flex flex-col justify-between space-y-4 h-full">
-                {/* 9:16 Vertical Reel Box */}
-                <div
-                  onClick={() => setActiveItem(vid)}
-                  className="relative aspect-[9/16] max-h-[500px] w-full overflow-hidden bg-[#1A1718] rounded-sm cursor-pointer shadow-sm border border-[#EFE8E6]"
-                >
-                  <Image
-                    src={vid.thumbnail}
-                    alt={vid.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 opacity-90 group-hover:opacity-100"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "/images/model/comatozze-saree-gold.jpg";
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#191617]/80 via-transparent to-transparent" />
-
-                  {/* Format & Duration Badges */}
-                  <div className="absolute top-3 left-3 px-2 py-0.5 bg-[#D85E78] text-white text-[9px] font-sans uppercase tracking-wider rounded">
-                    9:16 Reel
-                  </div>
-
-                  <div className="absolute top-3 right-3 px-2 py-0.5 bg-black/75 backdrop-blur-xs text-[10px] font-sans text-white rounded">
-                    {vid.duration}
-                  </div>
-
-                  {/* Play Button Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full border border-white/90 flex items-center justify-center bg-black/40 backdrop-blur-xs transform group-hover:scale-110 transition-transform">
-                      <Play className="w-4 h-4 text-white ml-0.5" fill="white" />
-                    </div>
-                  </div>
+        {/* Loading Indicator */}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="flex flex-col space-y-4 animate-pulse">
+                <div className="aspect-[9/16] max-h-[500px] w-full bg-[#EFE8E6] rounded-sm flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full border-2 border-[#D85E78] border-t-transparent animate-spin" />
                 </div>
-
-                <div className="flex-1 flex flex-col justify-between space-y-3">
-                  <div>
-                    <span className="text-[9px] tracking-[0.2em] font-sans uppercase text-[#7A7273] block font-medium">
-                      {vid.category}
-                    </span>
-                    <h3
-                      onClick={() => setActiveItem(vid)}
-                      className="font-editorial-serif text-2xl text-[#1A1718] group-hover:text-[#D85E78] transition-colors cursor-pointer mt-1 leading-snug"
-                    >
-                      {vid.title}
-                    </h3>
-                    <p className="text-xs text-[#7A7273] font-sans line-clamp-2 mt-1">
-                      {vid.description}
-                    </p>
-                  </div>
-
-                  {/* Action Row */}
-                  <div className="pt-3 border-t border-[#EFE8E6] flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <div className="flex items-center space-x-1 text-xs text-[#7A7273] font-sans bg-[#FAF0F2] px-2.5 py-1 rounded-full">
-                        <Eye className="w-3.5 h-3.5 text-[#D85E78]" />
-                        <span>{formatViews(vid.views)}</span>
-                      </div>
-                      <LoveReactButton videoId={vid.id} initialLikes={vid.likes} size="sm" />
-                    </div>
-
-                    <Link
-                      href={`/videos/${vid.slug}`}
-                      className="inline-flex items-center space-x-1 text-[11px] tracking-wider uppercase font-sans text-[#1A1718] hover:text-[#D85E78] font-medium"
-                    >
-                      <span>DETAILS</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </Link>
-                  </div>
-                </div>
+                <div className="h-5 w-3/4 bg-[#EFE8E6] rounded" />
+                <div className="h-4 w-1/2 bg-[#EFE8E6] rounded" />
               </div>
-            </ScrollReveal>
-          ))}
-        </div>
-      </div>
+            ))}
+          </div>
+        ) : (
+          /* 3-Column Vertical Reel Cards */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {reels.map((vid, idx) => (
+              <ScrollReveal key={vid.id} direction="up" delay={idx * 120}>
+                <article className="group flex flex-col justify-between space-y-4 h-full">
+                  {/* Direct Link to Dedicated Video Page */}
+                  <Link
+                    href={`/videos/${vid.slug}`}
+                    className="relative aspect-[9/16] max-h-[500px] w-full overflow-hidden bg-[#1A1718] rounded-sm block shadow-sm border border-[#EFE8E6]"
+                  >
+                    <Image
+                      src={vid.thumbnail}
+                      alt={vid.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/images/model/comatozze-saree-gold.jpg";
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#191617]/80 via-transparent to-transparent" />
 
-      {/* Unified Video Modal Player */}
-      <VideoPlayerModal video={activeItem} onClose={() => setActiveItem(null)} />
+                    {/* Duration Badge */}
+                    <div className="absolute top-3 right-3 px-2 py-0.5 bg-black/75 backdrop-blur-xs text-[10px] font-sans text-white rounded">
+                      {vid.duration}
+                    </div>
+
+                    {/* Play Button Overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full border border-white/90 flex items-center justify-center bg-black/40 backdrop-blur-xs transform group-hover:scale-110 transition-transform">
+                        <Play className="w-4 h-4 text-white ml-0.5" fill="white" />
+                      </div>
+                    </div>
+                  </Link>
+
+                  <div className="flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                      <Link href={`/videos/${vid.slug}`}>
+                        <h3 className="font-editorial-serif text-2xl text-[#1A1718] group-hover:text-[#D85E78] transition-colors leading-snug">
+                          {vid.title}
+                        </h3>
+                      </Link>
+                      <p className="text-xs text-[#7A7273] font-sans line-clamp-2 mt-1.5">
+                        {vid.description}
+                      </p>
+                    </div>
+
+                    {/* Action Row */}
+                    <div className="pt-3 border-t border-[#EFE8E6] flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1 text-xs text-[#7A7273] font-sans bg-[#FAF0F2] px-2.5 py-1 rounded-full">
+                          <Eye className="w-3.5 h-3.5 text-[#D85E78]" />
+                          <span>{formatViews(vid.views)}</span>
+                        </div>
+                        <LoveReactButton videoId={vid.id} initialLikes={vid.likes} size="sm" />
+                      </div>
+
+                      <Link
+                        href={`/videos/${vid.slug}`}
+                        className="inline-flex items-center space-x-1 text-[11px] tracking-wider uppercase font-sans text-[#1A1718] hover:text-[#D85E78] font-semibold"
+                      >
+                        <span>WATCH REEL</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              </ScrollReveal>
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 }

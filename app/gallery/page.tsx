@@ -3,20 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import { galleryItems, GalleryItem } from "@/data/gallery";
-
-const categories = ["ALL", "EDITORIAL", "FASHION", "BEAUTY", "PORTRAIT", "RUNWAY"] as const;
+import { galleryItems } from "@/data/gallery";
 
 export default function GalleryPage() {
-  const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-
-  const filteredItems =
-    activeCategory === "ALL"
-      ? galleryItems
-      : galleryItems.filter(
-          (item) => item.category.toUpperCase() === activeCategory
-        );
 
   const handleOpen = (idx: number) => {
     setSelectedIndex(idx);
@@ -31,16 +21,16 @@ export default function GalleryPage() {
   const handlePrev = useCallback(() => {
     if (selectedIndex === null) return;
     setSelectedIndex((prev) =>
-      prev! > 0 ? prev! - 1 : filteredItems.length - 1
+      prev! > 0 ? prev! - 1 : galleryItems.length - 1
     );
-  }, [selectedIndex, filteredItems.length]);
+  }, [selectedIndex]);
 
   const handleNext = useCallback(() => {
     if (selectedIndex === null) return;
     setSelectedIndex((prev) =>
-      prev! < filteredItems.length - 1 ? prev! + 1 : 0
+      prev! < galleryItems.length - 1 ? prev! + 1 : 0
     );
-  }, [selectedIndex, filteredItems.length]);
+  }, [selectedIndex]);
 
   // Keyboard navigation for Lightbox
   useEffect(() => {
@@ -68,32 +58,15 @@ export default function GalleryPage() {
             <h1 className="font-editorial-serif text-5xl sm:text-7xl lg:text-8xl text-[#191617] font-light mt-3 tracking-wide">
               Comatozze <span className="italic">Gallery</span>
             </h1>
-          </div>
-
-          {/* Category Filter */}
-          <div className="flex flex-wrap gap-2 pt-4">
-            {categories.map((cat) => {
-              const active = activeCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`text-[10px] tracking-[0.25em] font-sans uppercase px-4 py-2 border transition-all duration-200 ${
-                    active
-                      ? "bg-[#191617] text-[#FAF8F5] border-[#191617]"
-                      : "bg-transparent text-[#191617] border-[#E8DFDC] hover:border-[#191617]"
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
+            <p className="font-sans text-sm sm:text-base text-[#7A7273] mt-4 max-w-xl">
+              High-resolution photo archive featuring editorial portraits, poolside collections, and intimate lifestyle visuals.
+            </p>
           </div>
         </div>
 
         {/* Gallery Masonry/Editorial Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredItems.map((item, idx) => {
+          {galleryItems.map((item, idx) => {
             const aspectClass =
               item.aspect === "wide"
                 ? "aspect-[16/10]"
@@ -115,12 +88,7 @@ export default function GalleryPage() {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-[#191617]/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-6">
-                    <div className="text-right">
-                      <span className="text-[10px] tracking-[0.3em] font-sans uppercase text-[#FAF8F5] px-2 py-1 bg-[#191617]/60 backdrop-blur-sm">
-                        {item.category}
-                      </span>
-                    </div>
+                  <div className="absolute inset-0 bg-[#191617]/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
                     <div>
                       <figcaption className="font-editorial-serif text-2xl text-[#FAF8F5]">
                         {item.title}
@@ -150,7 +118,7 @@ export default function GalleryPage() {
             <span className="font-editorial-serif text-base tracking-widest text-[#191617]">
               {(selectedIndex + 1).toString().padStart(2, "0")}{" "}
               <span className="text-xs text-[#C98A90] font-sans">
-                / {filteredItems.length.toString().padStart(2, "0")}
+                / {galleryItems.length.toString().padStart(2, "0")}
               </span>
             </span>
             <button
@@ -175,8 +143,8 @@ export default function GalleryPage() {
           <div className="relative max-w-4xl max-h-[75vh] w-full h-full flex items-center justify-center">
             <div className="relative w-full h-full max-h-[70vh]">
               <Image
-                src={filteredItems[selectedIndex].src}
-                alt={filteredItems[selectedIndex].alt}
+                src={galleryItems[selectedIndex].src}
+                alt={galleryItems[selectedIndex].alt}
                 fill
                 priority
                 className="object-contain"
@@ -196,11 +164,9 @@ export default function GalleryPage() {
           {/* Bottom Caption */}
           <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row justify-between items-baseline border-t border-[#E8DFDC] pt-4 text-xs font-sans text-[#7A7273]">
             <span className="text-[#191617] font-medium tracking-wide">
-              {filteredItems[selectedIndex].title}
+              {galleryItems[selectedIndex].title}
             </span>
-            <span>
-              {filteredItems[selectedIndex].category} · {filteredItems[selectedIndex].year}
-            </span>
+            <span>{galleryItems[selectedIndex].year}</span>
           </div>
         </div>
       )}

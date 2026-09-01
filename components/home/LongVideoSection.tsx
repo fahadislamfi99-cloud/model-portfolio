@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Play, ArrowRight, ArrowUpRight, Eye } from "lucide-react";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { LoveReactButton } from "@/components/videos/LoveReactButton";
-import { VideoPlayerModal } from "@/components/videos/VideoPlayerModal";
 import { UnifiedVideo, getBaselineStats, slugify } from "@/lib/videos";
 
 const fallbackLongVideos: UnifiedVideo[] = [
@@ -14,7 +13,7 @@ const fallbackLongVideos: UnifiedVideo[] = [
     id: "lv-1",
     slug: "comatozze-signature-feature-01",
     title: "Comatozze Signature Feature 01",
-    category: "EXCLUSIVE WIDESCREEN EDITORIAL",
+    category: "WIDESCREEN FEATURE",
     year: "2026",
     duration: "15:42",
     videoUrl: "/long_video/video-1.mp4",
@@ -30,7 +29,7 @@ const fallbackLongVideos: UnifiedVideo[] = [
     id: "lv-2",
     slug: "comatozze-signature-feature-02",
     title: "Comatozze Signature Feature 02",
-    category: "ATMOSPHERIC MOTION STUDY",
+    category: "WIDESCREEN FEATURE",
     year: "2026",
     duration: "21:18",
     videoUrl: "/long_video/video-2.mp4",
@@ -45,8 +44,8 @@ const fallbackLongVideos: UnifiedVideo[] = [
 ];
 
 export function LongVideoSection() {
-  const [activeVideo, setActiveVideo] = useState<UnifiedVideo | null>(null);
   const [videos, setVideos] = useState<UnifiedVideo[]>(fallbackLongVideos);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetch("/api/admin/videos?format=widescreen")
@@ -57,7 +56,7 @@ export function LongVideoSection() {
             (v: {
               _id: string;
               title: string;
-              category: string;
+              category?: string;
               duration: string;
               thumbnail: string;
               videoUrl: string;
@@ -73,7 +72,7 @@ export function LongVideoSection() {
                 id: v._id,
                 slug: slugify(v.title || `video-${v._id}`),
                 title: v.title,
-                category: v.category || "WIDESCREEN FEATURE",
+                category: "WIDESCREEN FEATURE",
                 year: "2026",
                 duration: v.duration || "15:42",
                 thumbnail: v.thumbnail || "/images/model/comatozze-pool-sunset-1.png",
@@ -90,7 +89,8 @@ export function LongVideoSection() {
           setVideos(formatted);
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   const formatViews = (num: number) => {
@@ -126,90 +126,93 @@ export function LongVideoSection() {
           </div>
         </ScrollReveal>
 
-        {/* 2-Column Responsive Widescreen Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-          {videos.map((item, idx) => (
-            <ScrollReveal key={item.id} direction="up" delay={idx * 150}>
-              <div className="group flex flex-col justify-between space-y-4 h-full">
-                {/* Widescreen 16:9 Video Box */}
-                <div
-                  onClick={() => setActiveVideo(item)}
-                  className="relative aspect-video w-full overflow-hidden bg-[#1A1718] rounded-sm cursor-pointer shadow-sm border border-[#EFE8E6]"
-                >
-                  <Image
-                    src={item.thumbnail}
-                    alt={item.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 opacity-90 group-hover:opacity-100"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "/images/model/comatozze-pool-sunset-1.png";
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#191617]/70 via-transparent to-transparent" />
-
-                  {/* Format & Fake Duration Badges */}
-                  <div className="absolute top-3 left-3 px-2 py-0.5 bg-[#191617] text-white border border-[#D85E78]/50 text-[9px] font-sans uppercase tracking-wider rounded">
-                    16:9 Widescreen
-                  </div>
-
-                  <div className="absolute top-3 right-3 px-2.5 py-1 bg-black/75 backdrop-blur-xs text-[10px] tracking-wider font-sans text-white rounded">
-                    {item.duration}
-                  </div>
-
-                  {/* Play Button Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-14 h-14 rounded-full border border-white/90 flex items-center justify-center bg-black/40 backdrop-blur-xs transform group-hover:scale-110 transition-transform duration-300">
-                      <Play className="w-5 h-5 text-white ml-0.5" fill="white" />
-                    </div>
-                  </div>
+        {/* Loading Indicator */}
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+            {[1, 2].map((n) => (
+              <div key={n} className="flex flex-col space-y-4 animate-pulse">
+                <div className="aspect-video w-full bg-[#EFE8E6] rounded-sm flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full border-2 border-[#D85E78] border-t-transparent animate-spin" />
                 </div>
-
-                <div className="flex-1 flex flex-col justify-between space-y-3">
-                  <div>
-                    <div className="flex items-center justify-between text-[9px] tracking-[0.25em] font-sans uppercase text-[#D85E78] font-semibold">
-                      <span>{item.category}</span>
-                      <span>2026</span>
-                    </div>
-                    <h3
-                      onClick={() => setActiveVideo(item)}
-                      className="font-editorial-serif text-2xl text-[#1A1718] group-hover:text-[#D85E78] transition-colors cursor-pointer mt-1 leading-snug"
-                    >
-                      {item.title}
-                    </h3>
-                    <p className="text-xs text-[#7A7273] font-sans leading-relaxed line-clamp-2 mt-1">
-                      {item.description}
-                    </p>
-                  </div>
-
-                  {/* Footer Row: View Page link + Love Reaction + Views */}
-                  <div className="pt-3 border-t border-[#EFE8E6] flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <div className="flex items-center space-x-1 text-xs text-[#7A7273] font-sans bg-[#FAF0F2] px-2.5 py-1 rounded-full">
-                        <Eye className="w-3.5 h-3.5 text-[#D85E78]" />
-                        <span>{formatViews(item.views)}</span>
-                      </div>
-                      <LoveReactButton videoId={item.id} initialLikes={item.likes} size="sm" />
-                    </div>
-
-                    <Link
-                      href={`/videos/${item.slug}`}
-                      className="inline-flex items-center space-x-1 text-[11px] tracking-wider uppercase font-sans text-[#1A1718] hover:text-[#D85E78] font-medium"
-                    >
-                      <span>DETAILS</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </Link>
-                  </div>
-                </div>
+                <div className="h-6 w-3/4 bg-[#EFE8E6] rounded" />
+                <div className="h-4 w-1/2 bg-[#EFE8E6] rounded" />
               </div>
-            </ScrollReveal>
-          ))}
-        </div>
-      </div>
+            ))}
+          </div>
+        ) : (
+          /* 2-Column Responsive Widescreen Grid */
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+            {videos.map((item, idx) => (
+              <ScrollReveal key={item.id} direction="up" delay={idx * 150}>
+                <article className="group flex flex-col justify-between space-y-4 h-full">
+                  {/* Direct Link to Dedicated Video Page */}
+                  <Link
+                    href={`/videos/${item.slug}`}
+                    className="relative aspect-video w-full overflow-hidden bg-[#1A1718] rounded-sm block shadow-sm border border-[#EFE8E6]"
+                  >
+                    <Image
+                      src={item.thumbnail}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/images/model/comatozze-pool-sunset-1.png";
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#191617]/70 via-transparent to-transparent" />
 
-      {/* Unified Video Modal Player */}
-      <VideoPlayerModal video={activeVideo} onClose={() => setActiveVideo(null)} />
+                    {/* Fake Duration Badge */}
+                    <div className="absolute top-3 right-3 px-2.5 py-1 bg-black/75 backdrop-blur-xs text-[10px] tracking-wider font-sans text-white rounded">
+                      {item.duration}
+                    </div>
+
+                    {/* Play Button Overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-14 h-14 rounded-full border border-white/90 flex items-center justify-center bg-black/40 backdrop-blur-xs transform group-hover:scale-110 transition-transform duration-300">
+                        <Play className="w-5 h-5 text-white ml-0.5" fill="white" />
+                      </div>
+                    </div>
+                  </Link>
+
+                  <div className="flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                      <Link href={`/videos/${item.slug}`}>
+                        <h3 className="font-editorial-serif text-2xl text-[#1A1718] group-hover:text-[#D85E78] transition-colors leading-snug">
+                          {item.title}
+                        </h3>
+                      </Link>
+                      <p className="text-xs text-[#7A7273] font-sans leading-relaxed line-clamp-2 mt-1.5">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    {/* Footer Row: Love Reaction + Views + Direct Watch Link */}
+                    <div className="pt-3 border-t border-[#EFE8E6] flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1 text-xs text-[#7A7273] font-sans bg-[#FAF0F2] px-2.5 py-1 rounded-full">
+                          <Eye className="w-3.5 h-3.5 text-[#D85E78]" />
+                          <span>{formatViews(item.views)}</span>
+                        </div>
+                        <LoveReactButton videoId={item.id} initialLikes={item.likes} size="sm" />
+                      </div>
+
+                      <Link
+                        href={`/videos/${item.slug}`}
+                        className="inline-flex items-center space-x-1 text-[11px] tracking-wider uppercase font-sans text-[#1A1718] hover:text-[#D85E78] font-semibold"
+                      >
+                        <span>WATCH VIDEO</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              </ScrollReveal>
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 }
