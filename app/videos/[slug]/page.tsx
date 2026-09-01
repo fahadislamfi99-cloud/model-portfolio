@@ -74,8 +74,14 @@ export default async function VideoDetailPage({ params }: VideoDetailProps) {
   }
 
   const allVideos = await getAllVideos();
+  // Strictly filter only long (16:9 widescreen) videos for related suggestions
   const relatedVideos = allVideos
-    .filter((v) => v.id !== video.id && v.slug !== video.slug)
+    .filter(
+      (v) =>
+        v.format === "widescreen" &&
+        v.id !== video.id &&
+        v.slug !== video.slug
+    )
     .slice(0, 3);
 
   const isReel = video.format === "reel";
@@ -190,7 +196,7 @@ export default async function VideoDetailPage({ params }: VideoDetailProps) {
           </div>
         </div>
 
-        {/* Video Player Display */}
+        {/* Video Player Display (Remains Paused until user clicks Play) */}
         <div className="flex justify-center mb-12">
           <div
             className={`relative w-full bg-black overflow-hidden rounded-xl shadow-2xl border border-black/10 ${
@@ -203,7 +209,7 @@ export default async function VideoDetailPage({ params }: VideoDetailProps) {
               src={video.videoUrl}
               poster={video.thumbnail}
               controls
-              autoPlay
+              preload="metadata"
               playsInline
               className="w-full h-full object-contain"
             >
@@ -266,7 +272,7 @@ export default async function VideoDetailPage({ params }: VideoDetailProps) {
           </div>
         </div>
 
-        {/* Related Videos Section */}
+        {/* Related Videos Section (Only Long Videos) */}
         {relatedVideos.length > 0 && (
           <div>
             <div className="flex justify-between items-center mb-8 border-b border-[#E8DFDC] pb-4">
@@ -275,7 +281,7 @@ export default async function VideoDetailPage({ params }: VideoDetailProps) {
                   EXPLORE MORE
                 </span>
                 <h3 className="font-editorial-serif text-3xl text-[#191617] mt-1">
-                  Related Videos & Films
+                  Related Long Videos
                 </h3>
               </div>
               <Link
@@ -293,11 +299,7 @@ export default async function VideoDetailPage({ params }: VideoDetailProps) {
                   href={`/videos/${rel.slug}`}
                   className="group flex flex-col justify-between space-y-3"
                 >
-                  <div
-                    className={`relative w-full overflow-hidden bg-[#191617] rounded-sm border border-[#E8DFDC] ${
-                      rel.format === "reel" ? "aspect-[9/16] max-h-[380px]" : "aspect-video"
-                    }`}
-                  >
+                  <div className="relative w-full aspect-video overflow-hidden bg-[#191617] rounded-sm border border-[#E8DFDC]">
                     <Image
                       src={rel.thumbnail || "/images/model/comatozze-pool-sunset-1.png"}
                       alt={rel.title}
