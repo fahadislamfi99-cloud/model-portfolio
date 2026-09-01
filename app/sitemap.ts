@@ -1,8 +1,8 @@
 import { MetadataRoute } from "next";
 import { workProjects } from "@/data/work";
-import { videosData } from "@/data/videos";
+import { getAllVideos } from "@/lib/videos.server";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://comatozze.neonweb.xyz";
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -27,8 +27,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${baseUrl}/videos`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
+      changeFrequency: "daily",
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/gallery`,
@@ -45,11 +45,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  const videoRoutes: MetadataRoute.Sitemap = videosData.map((v) => ({
+  const allVideos = await getAllVideos();
+  const videoRoutes: MetadataRoute.Sitemap = allVideos.map((v) => ({
     url: `${baseUrl}/videos/${v.slug}`,
     lastModified: new Date(),
-    changeFrequency: "monthly",
-    priority: 0.7,
+    changeFrequency: "weekly",
+    priority: 0.85,
   }));
 
   return [...staticRoutes, ...workRoutes, ...videoRoutes];
